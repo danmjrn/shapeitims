@@ -1,0 +1,340 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'Mr & Mrs Mulongo Wedding' }}{% endblock %}
+
+{% block body %}
+    <!-- Preloder-->
+    <div class="preloder animated">
+        <div class="scoket">
+            <img src="{{ asset('build/img/preloader.svg') }}" alt="" />
+        </div>
+    </div>
+
+    <div class="body">
+
+        <div class="main-wrapper">
+            <!-- Navigation-->
+            <nav class="navbar navbar-fixed-top">
+                <div class="container">
+                    <div id="navbar" class="navbar-collapse"
+                         style="display: flex; align-items: center; justify-content: center; text-align: center;"
+                    >
+                        <ul class="nav navbar-nav">
+                            <li><a href="#programme_1">{{ 'Matrimonial Programme' }}</a></li>
+                            <li><a href="#programme_2">{{ 'Reception Programme' }}</a></li>
+                            <li><a href="#menu">{{ 'Our Menu' }}</a></li>
+                        </ul>
+                    </div>
+                    <!--/.navbar-collapse -->
+                </div>
+            </nav>
+
+            <!-- Home page-->
+            <section class="home">
+                <div class="tittle-block">
+                    <div class="logo">
+                        <img src="{{ asset('build/img/logo.png') }}" alt="logo">
+                    </div>
+                    <h3 class="white" style="text-transform: capitalize; font-weight: normal">{{ 'Wedding Celebration of Mr
+                    & Mrs Gininda' }}</h3>
+                </div>
+                <div class="scroll-down">
+                    <a href="#programme_1">
+                        <img src="{{ asset('build/img/arrow-down.png') }}" alt="down-arrow">
+                    </a>
+                </div>
+            </section>
+
+            <!-- About page-->
+            <section class="about" id="programme_1">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="page-header wow fadeInDown">
+                                <h1>{{ 'Matrimonial Programme' }}<small>{{ 'Programme 1' }}</small></h1>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row wow fadeInUp">
+                        <div class="col-md-1 col-sm-1 col-xs-1"></div>
+                        <div class="col-md-10 col-sm-10 col-xs-10 text-center">
+                            <p>
+                                {{ 'Opening prayer: Pastor S. Mkhwanazi' }}
+                            </p>
+                            <br>
+                            <div class="page-header">
+                                <h3 style="text-transform: capitalize">{{ 'Admin Arrangement' }}</h3>
+                            </div>
+                            <p>
+                                {{'Welcoming by MC: Youth President Thabo Banda'}}
+                            </p>
+                            <br>
+                            <p>
+                                {{'Marriage officiator: Arch Bishop TM Shongwe'}}
+                            </p>
+                            <br>
+                            <p>
+                                {{'[Break and Photo Session]'}}
+                            </p>
+                        </div>
+                        <div class="col-md-1 col-sm-1 col-xs-1"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Today's special page-->
+            <section class="special" id="programme_2">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="page-header wow fadeInDown">
+                                <h1 class="white">{{ 'Reception Programme' }}<small>{{ 'Programme 2' }}</small></h1>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row wow fadeInUp white">
+                        <div class="col-md-1 col-sm-1 col-xs-1"></div>
+                        <div class="col-md-10 col-sm-10 col-xs-10 text-white text-center">
+                            <p class="white">
+                                {{ 'Opening prayer: Bishop M Nkosi' }}
+                            </p>
+                            <br>
+                            <p class="white">
+                                {{'MC: Youth President Thabo Banda'}}
+                            </p>
+                            <br>
+                            <p class="white" style="display: flex; flex-direction: column">
+                                <span>{{'Family Representatives:'}}</span>
+                                <span class="primary-color">{{ '- Arch Bishop M Sibanyoni -' }}</span>
+                                <span class="primary-color">{{ '- Mr Mbayi Simelane -' }}</span>
+                            </p>
+                            <br>
+                            <p class="white" style="display: flex; flex-direction: column">
+                                <span>{{'Friends & Acquaintances:'}}</span>
+                                <span class="primary-color">{{ '- Mr Shane Jordaan -' }}</span>
+                                <span class="primary-color">{{ '- Mr Bongane Hlatshwayo -' }}</span>
+                                <span class="primary-color">{{ '- Lieutenant Colonel M. Mokopotsi -' }}</span>
+                                <span class="primary-color">{{ '- Mrs Nomthandazo Dube -' }}</span>
+                                <span class="primary-color">{{ '- Mrs Fikile Msimanga -' }}</span>
+                                <span class="primary-color">{{ '- Miss Dineo Mabuya -' }}</span>
+                                <span class="primary-color">{{ '- Mr Sipho Mchunu (Pastor) -' }}</span>
+                            </p>
+                            <br>
+                            <p class="white" style="display: flex; flex-direction: column">
+                                <span>{{'Children:'}}</span>
+                                <span class="primary-color">{{ '- Mr Siyabonga Gininda -' }}</span>
+                                <span class="primary-color">{{ '- Mr Themba Mbhele -' }}</span>
+                                <span class="primary-color">{{ '- Miss Nompilo Radebe -' }}</span>
+                            </p>
+                            <br>
+                            <p class="white" style="display: flex; flex-direction: column">
+                                <span>{{'Guest Speakers:'}}</span>
+                                <span>{{ '( Fatherland )' }}</span>
+                                <span class="primary-color">{{ '- Brigadier General DM. Madie -' }}</span>
+                                <span>{{ '( Motherland )' }}</span>
+                                <span class="primary-color">{{ '- Miss Hlengiwe Ndlovu -' }}</span>
+                            </p>
+                            <br>
+                            <p class="white" style="display: flex; flex-direction: column">
+                                <span>{{'Leadership in Christ:'}}</span>
+                                <span class="primary-color">{{ '- Presiding Bishop V. Nohashe -' }}</span>
+                                <span class="primary-color">{{ '- Presiding Bishop T. Shabalala -' }}</span>
+                                <span class="primary-color">{{ '- First Lady Bishop S. Mthethwa -' }}</span>
+                                <span class="primary-color">{{ '- First Lady Bishop T. Mguna -' }}</span>
+                            </p>
+                            <br>
+                            <p class="white">
+                                {{'Fairwell from the River of Mercy Ministries: Lady Arch Bishop PE. Shongwe'}}
+                            </p>
+                            <br>
+                            <p class="white">
+                                {{'Welcome to the Orginal Pentecostal Trinity Church: Bishop T. Mtambo'}}
+                            </p>
+                            <br>
+                            <p class="white">
+                                {{'Words of Wisdom: Senior Bishop Kubheka'}}
+                            </p>
+                            <br>
+                            <p class="white">
+                                {{'Cutting of Cake: Bishop Ntshangase'}}
+                            </p>
+                            <br>
+                            <p class="white">
+                                {{'Proposing of Toast: Mr & Mrs Mteto'}}
+                            </p>
+                            <br>
+                            <p class="white">
+                                {{'Vote of Thanks: Mr & Mrs Gininda'}}
+                            </p>
+                        </div>
+                        <div class="col-md-1 col-sm-1 col-xs-1"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- menu-->
+            <section class="menu" id="menu">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="page-header wow fadeInDown">
+                                <h1>{{ 'Our menu' }}<small>{{ 'Bon Appétit' }}</small></h1>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="food-menu wow fadeInUp">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="menu-tags">
+                                    <span data-filter="*" class="tagsort-active">All</span>
+                                    <span data-filter=".starter">starters</span>
+                                    <span data-filter=".main">main</span>
+                                    <span data-filter=".desserts">desserts</span>
+                                    <span data-filter=".drinks">drinks</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row menu-items">
+                            <div class="menu-item col-sm-6 col-xs-12 starter">
+                                <div class="clearfix menu-wrapper">
+                                    <h4>{{ 'Welcome Drinks' }}</h4>
+                                    <span class="price"></span>
+                                    <div class="dotted-bg"></div>
+                                </div>
+{#                                <p>pellentesque enim. Aliquam tempor</p>#}
+                            </div>
+                            <div class="menu-item col-sm-6 col-xs-12 starter">
+                                <div class="clearfix menu-wrapper">
+                                    <h4>{{ 'Canapés' }}</h4>
+                                    <span class="price"></span>
+                                    <div class="dotted-bg"></div>
+                                </div>
+{#                                <p>pellentesque enim. Aliquam tempor</p>#}
+                            </div>
+                            <div class="menu-item col-sm-6 col-xs-12 main">
+                                <div class="clearfix menu-wrapper">
+                                    <h4>{{ 'Creamy spinach' }}</h4>
+                                    <span class="price"></span>
+                                    <div class="dotted-bg"></div>
+                                </div>
+{#                                <p>pellentesque enim. Aliquam tempor</p>#}
+                            </div>
+                            <div class="menu-item col-sm-6 col-xs-12 main">
+                                <div class="clearfix menu-wrapper">
+                                    <h4>{{ 'Roasted vegetables' }}</h4>
+                                    <span class="price"></span>
+                                    <div class="dotted-bg"></div>
+                                </div>
+{#                                <p>pellentesque enim. Aliquam tempor</p>#}
+                            </div>
+                            <div class="menu-item col-sm-6 col-xs-12 main">
+                                <div class="clearfix menu-wrapper">
+                                    <h4>{{ 'Spicy rice' }}</h4>
+                                    <span class="price"></span>
+                                    <div class="dotted-bg"></div>
+                                </div>
+                                {#                                <p>pellentesque enim. Aliquam tempor</p>#}
+                            </div>
+                            <div class="menu-item col-sm-6 col-xs-12 main">
+                                <div class="clearfix menu-wrapper">
+                                    <h4>{{ 'Mash potatoes' }}</h4>
+                                    <span class="price"></span>
+                                    <div class="dotted-bg"></div>
+                                </div>
+                                {#                                <p>pellentesque enim. Aliquam tempor</p>#}
+                            </div>
+                            <div class="menu-item col-sm-6 col-xs-12 main">
+                                <div class="clearfix menu-wrapper">
+                                    <h4>{{ 'Chicken drumsticks' }}</h4>
+                                    <span class="price"></span>
+                                    <div class="dotted-bg"></div>
+                                </div>
+                                {#                                <p>pellentesque enim. Aliquam tempor</p>#}
+                            </div>
+                            <div class="menu-item col-sm-6 col-xs-12 main">
+                                <div class="clearfix menu-wrapper">
+                                    <h4>{{ 'Spit Braai (Lamb and beef)' }}</h4>
+                                    <span class="price"></span>
+                                    <div class="dotted-bg"></div>
+                                </div>
+                                {#                                <p>pellentesque enim. Aliquam tempor</p>#}
+                            </div>
+                            <div class="menu-item col-sm-6 col-xs-12 main">
+                                <div class="clearfix menu-wrapper">
+                                    <h4>{{ 'Green salad' }}</h4>
+                                    <span class="price"></span>
+                                    <div class="dotted-bg"></div>
+                                </div>
+                                {#                                <p>pellentesque enim. Aliquam tempor</p>#}
+                            </div>
+                            <div class="menu-item col-sm-6 col-xs-12 main">
+                                <div class="clearfix menu-wrapper">
+                                    <h4>{{ 'Cauliflower and broccoli sauce' }}</h4>
+                                    <span class="price"></span>
+                                    <div class="dotted-bg"></div>
+                                </div>
+                                {#                                <p>pellentesque enim. Aliquam tempor</p>#}
+                            </div>
+                            <div class="menu-item col-sm-6 col-xs-12 desserts">
+                                <div class="clearfix menu-wrapper">
+                                    <h4>{{ 'Chocolate delight' }}</h4>
+                                    <span class="price"></span>
+                                    <div class="dotted-bg"></div>
+                                </div>
+                                {#                                <p>pellentesque enim. Aliquam tempor</p>#}
+                            </div>
+                            <div class="menu-item col-sm-6 col-xs-12 desserts">
+                                <div class="clearfix menu-wrapper">
+                                    <h4>{{ 'Strawberry dreamy chocolate' }}</h4>
+                                    <span class="price"></span>
+                                    <div class="dotted-bg"></div>
+                                </div>
+                                {#                                <p>pellentesque enim. Aliquam tempor</p>#}
+                            </div>
+                            <div class="menu-item col-sm-6 col-xs-12 desserts">
+                                <div class="clearfix menu-wrapper">
+                                    <h4>{{ 'ChocMint' }}</h4>
+                                    <span class="price"></span>
+                                    <div class="dotted-bg"></div>
+                                </div>
+                                {#                                <p>pellentesque enim. Aliquam tempor</p>#}
+                            </div>
+                            <div class="menu-item col-sm-6 col-xs-12 drinks">
+                                <div class="clearfix menu-wrapper">
+                                    <h4>{{ 'Water' }}</h4>
+                                    <span class="price"></span>
+                                    <div class="dotted-bg"></div>
+                                </div>
+                                {#                                <p>pellentesque enim. Aliquam tempor</p>#}
+                            </div>
+                            <div class="menu-item col-sm-6 col-xs-12 drinks">
+                                <div class="clearfix menu-wrapper">
+                                    <h4>{{ '330ml variety soft drinks' }}</h4>
+                                    <span class="price"></span>
+                                    <div class="dotted-bg"></div>
+                                </div>
+                                {#                                <p>pellentesque enim. Aliquam tempor</p>#}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Footer-->
+            <section class="footer">
+
+                <!-- Footer - Copyright -->
+                <div class="footer-copyrights">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <p><i class="fa fa-copyright"></i> 2023. Mr & Mrs Gininda Wedding. All rights reserved. Developed with <i class="fa fa-heart primary-color"></i> by Shape IT Solutions</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+    </div>
+{% endblock %}

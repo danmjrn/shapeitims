@@ -1,0 +1,13 @@
+Name;Surname;Title;Status;Groom/Bride;Language;
+Alex;Mulongo;Mr;couple28;G;en;
+Scola;Mulongo;Mrs;couple28;G;en;
+Dan;Madisha;Mr;single;G;en;
+Beatrice;Tshikomba;Miss;single;G;en;
+Junior;Kavunda;Mr;fam56;G;en;
+Marlene;Kavunda;Mrs;fam56;G;en;
+James;Petrolier;Mr;fam56;G;en;
+Marilou;Petrolier;Mrs;fam56;G;en;
+Olivier;Buhindwa;Dr;couple31;G;en;
+Christelle;Milolo;Mrs;couple31;G;en;
+Hugo;Bampili;Pastor;couple32;G;en;
+Ruth Kalonji;Bampili;Mrs;couple32;G;en;

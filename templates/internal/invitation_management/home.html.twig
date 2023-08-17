@@ -1,0 +1,585 @@
+{% extends 'internal_admin.html.twig' %}
+
+{% block title %}{{ 'Lesy & Lens\'s Invitation Management System | Invitation Management' }}{% endblock %}
+
+{% block body %}
+    <div class="content-body">
+        <div class="container-fluid">
+            <div class="page-titles">
+                <h4>{{ 'Invitation Management' }}</h4>
+            </div>
+            <!-- row -->
+
+        <!-- row -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">{{ 'Invitees' }}</h4>
+                        {% if
+                            is_granted('ROLE_INTERNAL_ADMIN') or
+                            is_granted('ROLE_SUPER_ADMIN')
+                        %}
+                        <a href="{{ path('add_invitees') }}"
+                                class="btn btn-primary btn-sm">
+                            {{ 'Add Invitees' }}
+                        </a>
+                        {% endif %}
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table id="invitees-table" class="display">
+                                <thead>
+                                <tr>
+                                    <th>{{ 'First Name' }}</th>
+                                    <th>{{ 'Last Name' }}</th>
+                                    <th>{{ 'Title' }}</th>
+                                    <th>{{ 'Invitation Type' }}</th>
+                                    {% if
+                                        is_granted('ROLE_INTERNAL_ADMIN') or
+                                        is_granted('ROLE_SUPER_ADMIN')
+                                    %}
+                                    <th>{{ 'Action' }}</th>
+                                    {% endif %}
+                                </tr>
+                                </thead>
+                                <tbody>
+                                    {% for invitee in invitees %}
+                                        <tr id="{{ invitee.uuid }}">
+                                            <td>{{ invitee.firstname }}</td>
+                                            <td>{{ invitee.lastname }}</td>
+                                            <td>{{ invitee.title }}</td>
+                                            {% if invitee.invitationGroup.type == 1 %}
+                                                <td>{{ 'Single' }}</td>
+                                            {% elseif invitee.invitationGroup.type == 2 %}
+                                                <td>{{ 'Couple' }}</td>
+                                            {% elseif invitee.invitationGroup.type == 4 %}
+                                                <td>{{ 'Couple' }}</td>
+                                            {% else %}
+                                                <td>{{ 'Family/Group' }}</td>
+                                            {% endif %}
+                                            {% if
+                                                is_granted('ROLE_INTERNAL_ADMIN') or
+                                                is_granted('ROLE_SUPER_ADMIN')
+                                            %}
+                                            <td>
+                                                <div class="d-flex">
+                                                    <button class="btn btn-primary shadow btn-xs sharp mr-1"
+                                                            type="button"
+                                                            data-toggle="modal"
+                                                            data-target="{{ '#editInvitee'~invitee.uuid }}"
+                                                            disabled
+                                                    >
+                                                        <i class="fa fa-pencil"></i>
+                                                    </button>
+                                                    <div class="modal fade" id="{{ 'editInvitee'~invitee.uuid }}" tabindex="-1" role="dialog" aria-hidden="true">
+                                                        <div class="modal-dialog modal-lg modal-dialog-centered">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title">{{ 'Edit Invitees' }}</h5>
+                                                                    <button type="button" class="close" data-dismiss="modal"><span>&times;</span>
+                                                                    </button>
+                                                                </div>
+                                                                <div class="modal-body">{{ 'Make changes to '~invitee.fullNames }}</div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-danger light" data-dismiss="modal">Close</button>
+                                                                    <button type="button" class="btn btn-primary">Save changes</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <button class="btn btn-danger shadow btn-xs sharp"
+                                                            type="button"
+                                                            data-toggle="modal"
+                                                            data-target="{{ '#removeInvitee'~invitee.uuid }}"
+                                                            disabled
+                                                    >
+                                                        <i class="fa fa-trash"></i>
+                                                    </button>
+                                                    <div class="modal fade" id="{{ 'removeInvitee'~invitee.uuid }}" tabindex="-1" role="dialog" aria-hidden="true">
+                                                        <div class="modal-dialog modal-lg modal-dialog-centered">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title">{{ 'Remove Invitee' }}</h5>
+                                                                    <button type="button" class="close" data-dismiss="modal"><span>&times;</span>
+                                                                    </button>
+                                                                </div>
+                                                                <div class="modal-body">{{ 'Remove ' ~ invitee.fullNames ~ ' from invitees' }}</div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-danger light" data-dismiss="modal">Close</button>
+                                                                    <button type="button" class="btn btn-primary">Save changes</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            {% endif %}
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                                <tfoot>
+                                <tr>
+                                    <th>{{ 'First Name' }}</th>
+                                    <th>{{ 'Last Name' }}</th>
+                                    <th>{{ 'Title' }}</th>
+                                    <th>{{ 'Invitation Type' }}</th>
+                                    {% if
+                                        is_granted('ROLE_INTERNAL_ADMIN') or
+                                        is_granted('ROLE_SUPER_ADMIN')
+                                    %}
+                                    <th>{{ 'Action' }}</th>
+                                    {% endif %}
+                                </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">{{ 'Invitations' }}</h4>
+                        {% if
+                            is_granted('ROLE_INTERNAL_ADMIN') or
+                            is_granted('ROLE_SUPER_ADMIN')
+                        %}
+                        <a href="{{ path('export_invitations') }}" class="btn btn-primary btn-sm light">Export Invitations</a>
+                        {% endif %}
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table id="invitations-table" class="display">
+                                <thead>
+                                <tr>
+                                    <th>{{ 'Invitation Alias' }}</th>
+                                    <th>{{ 'Invitation For' }}</th>
+                                    <th>{{ 'RSVP' }}</th>
+                                    <th>{{ 'Invitation From' }}</th>
+                                    <th>{{ 'Times Link Opened' }}</th>
+                                    <th>{{ 'Action' }}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                    {% for key, invitation in invitations %}
+                                        <tr id="{{ invitation.uuid }}">
+                                            <td>{{ invitation.alias }}</td>
+                                            <td>
+                                                <ul>
+                                                    {% for invitee in invitation.invitees %}
+                                                        <li><span class="align-middle mr-2"><i class="ti-angle-right"></i></span>{{ invitee.title ~' '~invitee.fullNames }}</li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </td>
+                                            {% if invitation.rsvp is not empty %}
+                                                <td>{{ invitation.rsvp }}</td>
+                                            {% else %}
+                                                <td>{{ 'Has not RSVPed' }}</td>
+                                            {% endif %}
+                                            <td>{{ invitation.invitationFrom }}</td>
+                                            <td>{{ invitation.timesOpened }}</td>
+                                            <td>
+                                                <div class="d-flex">
+                                                    {% if
+                                                        is_granted('ROLE_INTERNAL_ADMIN') or
+                                                        is_granted('ROLE_SUPER_ADMIN')
+                                                    %}
+                                                    <button class="btn btn-primary shadow btn-xs sharp mr-1"
+                                                            type="button"
+                                                            data-toggle="modal"
+                                                            data-target="{{ '#viewInvitation'~invitation.uuid }}"
+                                                    >
+                                                        <i class="fa fa-eye"></i>
+                                                    </button>
+                                                    <div class="modal view-invitation fade" id="{{ 'viewInvitation'~invitation.uuid }}" tabindex="-1" role="dialog" aria-hidden="true">
+                                                        <div class="modal-dialog modal-lg modal-dialog-centered">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title">{{ 'View Invitation' }}</h5>
+                                                                    <button type="button" class="close" data-dismiss="modal"><span>&times;</span>
+                                                                    </button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <div class="invitation-letter" id="{{ invitation.uuid }}">
+                                                                        {{ invitation.addressedTo }}
+                                                                    </div>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-danger light" data-dismiss="modal">Close</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    {% endif %}
+                                                    <button class="btn bg-secondary text-white shadow btn-xs sharp"
+                                                            type="button"
+                                                            data-toggle="modal"
+                                                            data-target="{{ '#shareInvitation'~invitation.uuid }}"
+                                                    >
+                                                        <i class="fa fa-share"></i>
+                                                    </button>
+                                                    <div class="modal fade" id="{{ 'shareInvitation'~invitation.uuid }}" tabindex="-1" role="dialog" aria-hidden="true">
+                                                        <div class="modal-dialog modal-lg modal-dialog-centered">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title">{{ 'Share Invitation' }}</h5>
+                                                                    <button type="button" class="close" data-dismiss="modal"><span>&times;</span>
+                                                                    </button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <div class="mb-3">
+                                                                        <div class="mb-4">
+                                                                            <h4 class="card-title card-intro-title mb-1">Invitation link generated for the <code class="bg-green-light text-white">following:</code></h4>
+                                                                        </div>
+                                                                        <ul class="list-icons">
+                                                                            {% for invitee in invitation.invitees %}
+                                                                                <li><span class="align-middle mr-2"><i class="ti-angle-right"></i></span>{{ invitee.title ~' '~invitee.fullNames }}</li>
+                                                                            {% endfor %}
+                                                                        </ul>
+                                                                    </div>
+                                                                    <div id="{{ 'copiedSuccess-'~invitation.uuid }}"></div>
+                                                                    <label style="font-weight: 600">Invitation Link<span class="message"></span></label><br />
+                                                                    <div class="input-group mb-3">
+                                                                        <input
+                                                                                type="text"
+                                                                                class="form-control"
+                                                                                value="{{ url('invitation_letter', { 'uuid': invitation.uuid }) }}"
+                                                                                readonly
+                                                                        >
+                                                                        <div class="input-group-append">
+                                                                            <button onclick="copyToClipboard('{{ url('invitation_letter', { 'uuid': invitation.uuid }) }}', '{{ invitation.uuid }}')" class="btn btn-primary" type="button"><i class="fa fa-copy"></i></button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-danger light" data-dismiss="modal">Close</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                                <tfoot>
+                                <tr>
+                                    <th>{{ 'Invitation Alias' }}</th>
+                                    <th>{{ 'RSVP' }}</th>
+                                    <th>{{ 'Times Link Opened' }}</th>
+                                    <th>{{ 'Action' }}</th>
+                                </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <!-- Datatable -->
+    <script src="{{ asset('build/vendor/datatables/js/jquery.dataTables.min.js') }}"></script>
+    <script>
+        function copyToClipboard( copyText, uuid ) {
+            // Copy the text inside the text field
+            navigator.clipboard.writeText( copyText );
+
+            let successAlertContainer = document.querySelector( `#copiedSuccess-${ uuid }` );
+            successAlertContainer.innerHTML = `
+<div class="alert alert-primary solid alert-dismissible fade show">
+    <button type="button" class="close h-100" data-dismiss="alert" aria-label="Close"><span><i class="mdi mdi-close"></i></span>
+    </button>
+    <strong>Success!</strong> Invitation link has been copied to clipboard.
+</div>
+            `;
+        }
+
+        $(function () {
+            //invitees table
+            let $inviteesTable = $('#invitees-table').DataTable( {
+                createdRow: function ( row, data, index ) {
+                    $(row).addClass('selected')
+                },
+
+                "scrollY":        "42vh",
+                "scrollCollapse": true,
+                "paging":         false
+            });
+
+            $inviteesTable.on('click', 'tbody tr', function() {
+                let $row = $inviteesTable.row(this).nodes().to$();
+                let hasClass = $row.hasClass('selected');
+                if (hasClass) {
+                    $row.removeClass('selected')
+                } else {
+                    $row.addClass('selected')
+                }
+            })
+
+            $inviteesTable.rows().every(function() {
+                this.nodes().to$().removeClass('selected')
+            });
+
+            //invitations table
+            let $invitationsTable = $('#invitations-table').DataTable( {
+                createdRow: function ( row, data, index ) {
+                    $(row).addClass('selected')
+                },
+
+                "scrollY":        "42vh",
+                "scrollCollapse": true,
+                "paging":         false
+            });
+
+            $invitationsTable.on('click', 'tbody tr', function() {
+                let uuid = this.id;
+                let url = '{{ url('invitation_letter', { 'uuid': 'thisUuid' }) }}'
+                    .replace('thisUuid', uuid)
+                copyToClipboard(url, uuid);
+
+                let $row = $invitationsTable.row(this).nodes().to$();
+                let hasClass = $row.hasClass('selected');
+                if (hasClass) {
+                    $row.removeClass('selected')
+                } else {
+                    $row.addClass('selected')
+                }
+            })
+
+            $invitationsTable.rows().every(function() {
+                this.nodes().to$().removeClass('selected')
+            });
+        });
+    </script>
+    {% if
+        is_granted('ROLE_INTERNAL_ADMIN') or
+        is_granted('ROLE_SUPER_ADMIN')
+    %}
+    <script>
+        $(function () {
+            // select elements
+            const videos = document.querySelectorAll('.view-invitation video');
+            const toggles = document.querySelectorAll('.view-invitation .toggle');
+            const fullscreens = document.querySelectorAll('.view-invitation .fullscreen');
+            const audioControls = document.querySelectorAll('.view-invitation .audio-control');
+            const viewInvitationModals = document.querySelectorAll('.modal.view-invitation');
+
+            // console.log(videos,
+            //     toggles,
+            //     fullscreens,
+            //     audioControls,
+            // viewInvitationModals
+            // );
+
+            $(videos).each(
+                function (index, video) {
+                    // console.log($().html());
+                    videoEventListener( video, toggles[index], audioControls[index] );
+                    toggleEventListener( video, toggles[index] );
+                    fullscreenEventListener( video, fullscreens[index] );
+                    audioControlEventListener( video, audioControls[index] );
+                    onCloseModal(viewInvitationModals[index], video);
+                    onOpenModel(viewInvitationModals[index], video);
+                }
+            );
+
+            function onCloseModal ( viewInvitationModal, videoElem ) {
+                $(viewInvitationModal).find('button.close').click(
+                    function () {
+                        videoElem.pause();
+                    }
+                );
+            }
+
+            function onOpenModel ( viewInvitationModal, videoElem ) {
+                let $button = $(viewInvitationModal).siblings('button.btn-primary');
+                $button.click(
+                    function () {
+                        videoElem.play();
+                    }
+                );
+            }
+
+            /**
+             *
+             * @param videoItem
+             * @param toggleItem
+             * @param audioControlItem
+             */
+            function pauseVideoItem (videoItem, toggleItem, audioControlItem) {
+                videoItem.pause();
+
+                toggleItem.innerHTML = `<span class="material-icons" style="font-size: 16px">play_arrow</span>`;
+
+                $(videoItem).prop('muted', true);
+
+                $(audioControlItem).html
+                (
+                    `
+<span class="material-icons" style="font-size: 16px">volume_off</span>
+<span style="margin-left: 5px; color: #FFF; display: block; font-size: 10px">Tap to unmute</span>
+            `
+                );
+            }
+
+            /*
+            * if (videoElem) {}
+            * */
+
+// add event listeners
+// Play or Pause events(On video click)
+            /**
+             *
+             * @param videoElem
+             * @param toggleElem
+             * @param audioControlElem
+             */
+            function videoEventListener ( videoElem, toggleElem, audioControlElem ){
+                videoElem.addEventListener
+                (
+                    'click',
+                    function () {
+                        // toggle for video play and pause
+                        const playOrPause = videoElem.paused ? 'play' : 'pause';
+
+                        videoElem[playOrPause]();
+
+                        // toggle for icon change when play or pause
+                        if (playOrPause === 'play') {
+                            toggleElem.innerHTML = `<span class="material-icons" style="font-size: 16px">pause</span>`;
+                        }
+                        else {
+                            toggleElem.innerHTML = `<span class="material-icons" style="font-size: 16px">play_arrow</span>`;
+                        }
+                    }
+                );
+
+                // Change progress wrt time
+                videoElem.addEventListener
+                (
+                    'timeupdate',
+                    function () {
+                        // convert video's current time into percentage
+                        const percent = (videoElem.currentTime / videoElem.duration) * 100;
+                        // append it to the flexBasis property (CSS)
+                        // console.log(percent);
+                    }
+                );
+
+                videoElem.addEventListener
+                (
+                    "canplay",
+                    function () {
+                        videoElem.play();
+
+                        toggleElem.innerHTML = `<span class="material-icons" style="font-size: 16px">pause</span>`;
+                    }
+                );
+
+                $(videoElem).on
+                (
+                    'ended',
+                    function () {
+                        pauseVideoItem(videoElem, toggleElem, audioControlElem);
+                    }
+                );
+
+                $(videoElem).prop('muted', true);
+
+                $(videoElem).hover
+                (
+                    () => {
+                        $(videoElem).css("z-index", "0");
+                    },
+                    () => {
+                        $(videoElem).css("z-index", "2");
+                    }
+                );
+            }
+
+            /**
+             *
+             * @param videoElem
+             * @param toggleElem
+             */
+            function toggleEventListener ( videoElem, toggleElem ){
+                // (On button click)
+                toggleElem.addEventListener
+                (
+                    'click',
+                    function () {
+                        // toggle for video play and pause
+                        const playOrPause = videoElem.paused ? 'play' : 'pause';
+
+                        videoElem[playOrPause]();
+
+                        // toggle for icon change when play or pause
+                        if (playOrPause === 'play') {
+                            toggleElem.innerHTML = `<span class="material-icons" style="font-size: 16px">pause</span>`;
+                        }
+                        else {
+                            toggleElem.innerHTML = `<span class="material-icons" style="font-size: 16px">play_arrow</span>`;
+                        }
+                    }
+                );
+            }
+
+            /**
+             *
+             * @param videoElem
+             * @param fullscreenElem
+             */
+            function fullscreenEventListener ( videoElem, fullscreenElem ){
+                fullscreenElem.addEventListener
+                (
+                    'click',
+                    function () {
+                        videoElem.requestFullscreen().then(r => {console.log(r)});
+                    }
+                );
+            }
+
+            /**
+             *
+             * @param videoElem
+             * @param audioControlElem
+             */
+            function audioControlEventListener ( videoElem, audioControlElem ){
+                $(audioControlElem).click
+                (
+                    function () {
+                        if ($(videoElem).prop('muted')) {
+                            $(videoElem).prop('muted', false);
+
+                            $(this).html
+                            (
+                                `
+<span class="material-icons" style="font-size: 16px">volume_up</span>
+<span style="margin-left: 5px; color: #FFF; display: block; font-size: 10px">Tap to mute</span>
+                            `
+                            );
+                        }
+                        else {
+                            $(videoElem).prop('muted', true);
+
+                            $(this).html
+                            (
+                                `
+<span class="material-icons" style="font-size: 16px">volume_off</span>
+<span style="margin-left: 5px; color: #FFF; display: block; font-size: 10px">Tap to unmute</span>
+                            `
+                            );
+                        }
+                    }
+                );
+            }
+
+        });
+    </script>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,559 @@
+{% extends 'invitation.html.twig' %}
+
+{% block title %}
+    {% if invitationLang is not empty and invitationLang == 'fr' %}
+        {{ 'Invitation de Lesy & Lens | Lettrer' }}
+    {% else %}
+        {{ 'Lesy & Lens\'s Invitation | Letter' }}
+    {% endif %}
+{% endblock %}
+
+{% block tags %}
+    {% if invitationLang is not empty and invitationLang == 'fr' %}
+        <meta property="og:title" content="{{ 'Invitation au mariage de Lesy et Lens' }}" />
+        <meta property="og:description" content="{{ 'Invitation adressée à '~addressedTo~'. Veuillez SVP confirmer votre présence.' }}" />
+    {% else %}
+        <meta property="og:title" content="{{ 'Lesy & Lens\'s Wedding Invitation' }}" />
+        <meta property="og:description" content="{{ 'Invitation addressed to '~addressedTo~'. Kindly do RSVP.' }}" />
+    {% endif %}
+    <meta property="og:image" content="{{ asset('build/img/bg_landl_small.png') }}" />
+{% endblock %}
+
+
+{% block body %}
+    <!-- Preloder-->
+    <div class="preloder animated">
+        <div class="scoket">
+            <img src="{{ asset('build/img/preloader.svg') }}" alt="" />
+        </div>
+    </div>
+    {% set vid_id = 'vid_1' %}
+    <div class="invitation-video">
+        <div id="{{ vid_id }}_audio_control" class="audio-control muted rounded-0"  style="display: flex; z-index: 1; flex-direction: row;
+                                background-color: rgba(0,0,0,0.3); position: absolute; color: #fff; text-transform: uppercase;
+                                padding: 0.5rem 1rem; margin: 1rem; justify-content: center">
+            <span class="material-icons" style="font-size: 16px">volume_off</span>
+            <span style="margin-left: 5px; color: #FFF; display: block; font-size: 10px">Tap to unmute</span>
+        </div>
+        <div style="display: flex; z-index: 1; flex-direction: row;
+                                background-color: rgba(0,0,0,0.3); position: absolute; right: 0; color: #fff; text-transform: uppercase;
+                                padding: 0.5rem 1rem; margin: 1rem; justify-content: center;">
+            <button class="player__button toggle" id="{{ vid_id }}_toggle" style="margin: 0 2px" title="Toggle Play">
+                <span class="material-icons" style="font-size: 16px">play_arrow</span>
+            </button>
+            <button id="{{ vid_id }}_fullscreen" class="player__button fullscreen" style="margin: 0 2px" title="FullScreen">
+                <span class="material-icons" style="font-size: 16px">fit_screen</span>
+            </button>
+        </div>
+        <video
+                class="player__video viewer"
+                id="{{ vid_id }}"
+                preload="auto"
+                style="z-index: 1"
+                muted
+                autoplay="autoplay"
+                loop
+                playsinline
+        >
+            {% if invitationLang is not empty and invitationLang == 'fr' %}
+                <source src="{{ asset('build/vid/lens_lesy_invitation_fr.mp4') }}" type="video/mp4" />
+            {% else %}
+                <source src="{{ asset('build/vid/lens_lesy_invitation_en.mp4') }}" type="video/mp4" />
+            {% endif %}
+        </video>
+    </div>
+    <div id="videoFrameEnd"></div>
+
+    <div class="invitation-letter" id="{{ invitationUuid }}">
+        {% if invitationLang is not empty and invitationLang == 'fr' %}
+            {{ include('public_directory/svgs/invitation_lens_lesy_fr_svg.html.twig') }}
+        {% else %}
+            {{ include('public_directory/svgs/invitation_lens_lesy_en_svg.html.twig') }}
+        {% endif %}
+{#        <img src="{{ asset('build/img/invitation-letter.png') }}" width="100%" alt="">#}
+        <div class="rsvp-block">
+            <div class="outer text-center">
+                <div class="scroll-down">
+                    <a href="#rsvp">
+                        <img src="{{ asset('build/img/rsvp-arrow-down.png') }}" alt="down-arrow">
+                    </a>
+                </div>
+            </div>
+        </div>
+{#        <!-- ////////////////////////////////// -->#}
+{#        <div class="container">#}
+{#            <div class="row">#}
+{#                <div class="col-xs-12 col-12 pt-3 pb-3">#}
+{#                    <div class="wheel-header text-center marg-lg-t85 marg-lg-b90  marg-md-t50">#}
+{#                        <h3>Church Service <span>Location below</span></h3>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+{#        <!-- ///////////////////////////////////// -->#}
+{#        <div class="container-fluid padd-lr0">#}
+{#            <div class="row">#}
+{#                <div class="col-xs-12 col-12 padd-lr0">#}
+{#                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3579.8633018876076!2d28.06496133029761!3d-26.201124717229533!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1e950e7c592adf1f%3A0xdfb21381edbb7944!2s4%20Princes%20St%2C%20Troyeville%2C%20Johannesburg%2C%202139!5e0!3m2!1sen!2sza!4v1671107042159!5m2!1sen!2sza" width="100%" height="450" style="border:0;" allowfullscreen="true" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+
+{#        <!-- ////////////////////////////////// -->#}
+{#        <div class="container">#}
+{#            <div class="row">#}
+{#                <div class="col-xs-12 col-12 pt-3 pb-3">#}
+{#                    <div class="wheel-header text-center marg-lg-t85 marg-lg-b90  marg-md-t50">#}
+{#                        <h3>Reception <span>Location below</span></h3>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+{#        <!-- ///////////////////////////////////// -->#}
+{#        <div class="container-fluid padd-lr0">#}
+{#            <div class="row">#}
+{#                <div class="col-xs-12 col-12 padd-lr0">#}
+{#                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3580.606509177814!2d28.114430330294123!3d-26.17694161627557!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1e9512040f4f5cfd%3A0xbbf61d9332e436a7!2sThe%20Cypriot%20Club!5e0!3m2!1sen!2sza!4v1671181872271!5m2!1sen!2sza" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+    </div>
+{#    #}
+    <div class="body">
+
+        <div class="main-wrapper" >
+            <!-- Navigation navbar-fixed-top-->
+            <nav class="navbar" id="navbar">
+                <div class="container">
+                    <div id="navbar" class="navbar-collapse"
+                         style="display: flex; align-items: center; justify-content: center; text-align: center;"
+                    >
+                        <ul class="nav navbar-nav">
+                            {% if invitationLang is not empty and invitationLang == 'fr' %}
+                                <li><a href="#rsvp">{{ 'RSVP' }}</a></li>
+                                <li><a href="#datetime">{{ 'Date et Heure' }}</a></li>
+                                <li><a href="#location">{{ 'Location' }}</a></li>
+                            {% else %}
+                                <li><a href="#rsvp">{{ 'RSVP' }}</a></li>
+                                <li><a href="#datetime">{{ 'Date & Time' }}</a></li>
+                                <li><a href="#location">{{ 'Location' }}</a></li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                    <!--/.navbar-collapse -->
+                </div>
+            </nav>
+
+            <!-- RSVP -->
+            <section class="about" id="rsvp">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="page-header wow fadeInDown">
+                                <h1>{{ 'RSVP' }}</h1>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row wow fadeInUp">
+                        <div class="col-md-1 col-sm-1 col-xs-1"></div>
+                        <div class="col-md-10 col-sm-10 col-xs-10 text-center">
+                            {% if invitationLang is not empty and invitationLang == 'fr' %}
+                                <div class="page-header" style="margin: 0">
+                                    <h3 style="text-transform: capitalize">{{ 'CONFIRMATION DE PRÉSENCE' }}</h3>
+                                </div>
+                                <p>
+                                    {{'C\'est un honneur et une joie pour nous si ' ~addressedTo~ ' assiste à notre mariage.'}}
+                                </p>
+                                <br>
+                                <p>
+                                    {{'Si vous n\'avez pas encore confirmé, veuillez sélectionner le texte "Assistera" ci-dessous.'}}
+                                </p>
+                                <br>
+                                <p>
+                                    {{'Si vous ne pouvez pas assister à notre mariage, ce n\'est pas grave, mais veuillez sélectionner le texte "N\'assistera pas" ci-dessous.'}}
+                                </p>
+                                <p>
+                                    {{'Si ce n\'est pas certain que vous puissiez assister à notre mariage, ce n\'est pas grave, mais veuillez sélectionner le texte "Incertain" ci-dessous.'}}
+                                </p>
+                            {% else %}
+                                <div class="page-header" style="margin: 0">
+                                    <h3 style="text-transform: capitalize">{{ 'CONFIRMATION OF ATTENDANCE' }}</h3>
+                                </div>
+                                <p>
+                                    {{'It is an honor and happiness for us if ' ~addressedTo~ ' will attend our wedding.'}}
+                                </p>
+                                <br>
+                                <p>
+                                    {{'If you have not confirmed yet kindly select the "Will Attend" text below.'}}
+                                </p>
+                                <br>
+                                <p>
+                                    {{'If it\'s not possible to attend our wedding, that\'s okay, but please select the "Will Not Attend" text below.'}}
+                                </p>
+                                <p>
+                                    {{'If it\'s not certain to attend our wedding, that\'s okay, but please select the "Unsure" text below.'}}
+                                </p>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-1 col-sm-1 col-xs-1"></div>
+                    </div>
+                    <div class="row wow fadeInUp">
+                        <div class="col-md-1 col-sm-1 col-xs-1"></div>
+                        <div class="col-md-10 col-sm-10 col-xs-10 text-center">
+                            <div class="rsvp-block">
+                                <div class="outer text-center">
+                                    <div class="content">
+                                        {% if invitationLang is not empty and invitationLang == 'fr' %}
+                                            {% if rsvpValueFromEntity is not empty %}
+                                                {% if rsvpValueFromEntity in 'Will be attending' %}
+                                                    <p id="yes" class="p active">{{ 'Assistera' }}</p>
+                                                    <p class="s">{{ '|' }}</p>
+                                                    <p id="no" class="p">{{ 'N\'assistera pas' }}</p>
+                                                    <p class="s">{{ '|' }}</p>
+                                                    <p id="unsure" class="p">{{ 'Incertain' }}</p>
+                                                {% elseif rsvpValueFromEntity in 'Will not be attending'  %}
+                                                    <p id="yes" class="p">{{ 'Assistera' }}</p>
+                                                    <p class="s">{{ '|' }}</p>
+                                                    <p id="no" class="p active">{{ 'N\'assistera pas' }}</p>
+                                                    <p class="s">{{ '|' }}</p>
+                                                    <p id="unsure" class="p">{{ 'Incertain' }}</p>
+                                                {% else %}
+                                                    <p id="yes" class="p">{{ 'Assistera' }}</p>
+                                                    <p class="s">{{ '|' }}</p>
+                                                    <p id="no" class="p">{{ 'N\'assistera pas' }}</p>
+                                                    <p class="s">{{ '|' }}</p>
+                                                    <p id="unsure" class="p active">{{ 'Incertain' }}</p>
+                                                {% endif %}
+                                            {% else %}
+                                                <p id="yes" class="p">{{ 'Assistera' }}</p>
+                                                <p class="s">{{ '|' }}</p>
+                                                <p id="no" class="p">{{ 'N\'assistera pas' }}</p>
+                                                <p class="s">{{ '|' }}</p>
+                                                <p id="unsure" class="p">{{ 'Incertain' }}</p>
+                                            {% endif %}
+                                        {% else %}
+                                            {% if rsvpValueFromEntity is not empty %}
+                                                {% if rsvpValueFromEntity in 'Will be attending' %}
+                                                    <p id="yes" class="p active">{{ 'Will Attend' }}</p>
+                                                    <p class="s">{{ '|' }}</p>
+                                                    <p id="no" class="p">{{ 'Will Not Attend' }}</p>
+                                                    <p class="s">{{ '|' }}</p>
+                                                    <p id="unsure" class="p">{{ 'Unsure' }}</p>
+                                                {% elseif rsvpValueFromEntity in 'Will not be attending'  %}
+                                                    <p id="yes" class="p">{{ 'Will Attend' }}</p>
+                                                    <p class="s">{{ '|' }}</p>
+                                                    <p id="no" class="p active">{{ 'Will Not Attend' }}</p>
+                                                    <p class="s">{{ '|' }}</p>
+                                                    <p id="unsure" class="p">{{ 'Unsure' }}</p>
+                                                {% else %}
+                                                    <p id="yes" class="p">{{ 'Will Attend' }}</p>
+                                                    <p class="s">{{ '|' }}</p>
+                                                    <p id="no" class="p">{{ 'Will Not Attend' }}</p>
+                                                    <p class="s">{{ '|' }}</p>
+                                                    <p id="unsure" class="p active">{{ 'Unsure' }}</p>
+                                                {% endif %}
+                                            {% else %}
+                                                <p id="yes" class="p">{{ 'Will Attend' }}</p>
+                                                <p class="s">{{ '|' }}</p>
+                                                <p id="no" class="p">{{ 'Will Not Attend' }}</p>
+                                                <p class="s">{{ '|' }}</p>
+                                                <p id="unsure" class="p">{{ 'Unsure' }}</p>
+                                            {% endif %}
+                                        {% endif %}
+
+                                    </div>
+
+                                    <div class="rsvped-message text-center"  style="display: none; position: absolute; width: 100%">
+                                        {% if invitationLang is not empty and invitationLang == 'fr' %}
+                                            <p style="width: 100%">{{ 'Merci d\'avoir confirmé votre présence. Cette page sera rafraîchie sous peu.' }}</p>
+                                        {% else %}
+                                            <p style="width: 100%">{{ 'Thank you for RSVPing. This page will be refreshed shortly.' }}</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-1 col-sm-1 col-xs-1"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Date and Time -->
+            <section class="special" id="datetime">
+                {% if invitationLang is not empty and invitationLang == 'fr' %}
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="page-header wow fadeInDown">
+                                    <h1 class="white">{{ 'Date et Heure' }}</h1>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row wow fadeInUp white">
+                            <div class="col-md-4 col-sm-12 col-xs-12 text-white text-center">
+                                <p class="white">
+                                    {{ "Cérémonie:" }}
+                                </p>
+                                <p class="white">
+                                    <span class="primary-color" style="font-size: 42px; line-height: 24px; margin: 0">{{ '13:00' }}</span>
+                                </p>
+                            </div>
+                            <div class="col-md-4 col-sm-12 col-xs-12 text-white text-center">
+                                <p class="white">
+                                    {{ 'Samedi' }}
+                                </p>
+                                <p class="white" style="font-size: 72px; line-height: 42px; margin: 0">
+                                    {{'24'}}
+                                </p>
+                                <p class="white">
+                                    <span class="primary-color">{{ 'Juin 2023' }}</span>
+                                </p>
+                            </div>
+                            <div class="col-md-4 col-sm-12 col-xs-12 text-white text-center">
+                                <p class="white">
+                                    {{ "Réception:" }}
+                                </p>
+                                <p class="white">
+                                    <span class="primary-color" style="font-size: 42px; line-height: 24px; margin: 0">{{ '17:45' }}</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="page-header wow fadeInDown">
+                                    <h1 class="white">{{ 'Date & Time' }}</h1>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row wow fadeInUp white">
+                            <div class="col-md-4 col-sm-12 col-xs-12 text-white text-center">
+                                <p class="white">
+                                    {{ "Ceremony:" }}
+                                </p>
+                                <p class="white">
+                                    <span class="primary-color" style="font-size: 42px; line-height: 24px; margin: 0">{{ '13:00' }}</span>
+                                </p>
+                            </div>
+                            <div class="col-md-4 col-sm-12 col-xs-12 text-white text-center">
+                                <p class="white">
+                                    {{ 'Saturday' }}
+                                </p>
+                                <p class="white" style="font-size: 72px; line-height: 42px; margin: 0">
+                                    {{'24'}}
+                                </p>
+                                <p class="white">
+                                    <span class="primary-color">{{ 'June 2023' }}</span>
+                                </p>
+
+                            </div>
+                            <div class="col-md-4 col-sm-12 col-xs-12 text-white text-center">
+                                <p class="white">
+                                    {{ "Reception:" }}
+
+                                </p>
+                                <p class="white">
+                                    <span class="primary-color" style="font-size: 42px; line-height: 24px; margin: 0">{{ '17:45' }}</span>
+                                </p>
+                            </div>
+                        </div>
+                        {#                    <div class="row wow fadeInUp white">#}
+                        {#                        <div class="col-md-12 col-sm-12 col-xs-12 text-white text-center">#}
+
+                        {#                            <a href="https://calendar.google.com/calendar/event?action=TEMPLATE&tmeid=MGJwcGMxbGN1aW9hcTJ1MG1oOW9scGV2OGogZGFubWpybkBt&tmsrc=danmjrn%40gmail.com" target="_blank" class="button has-tooltip btn-cta" data-tooltip="Add to Calendar" target="_blank" data-aos="zoom-in">#}
+                        {#                                <i class="far fa-calendar-plus"></i>#}
+                        {#                                &nbsp;&nbsp;Google Calendar#}
+                        {#                            </a>#}
+                        {#                        </div>#}
+                        {#                    </div>#}
+                    </div>
+                {% endif %}
+            </section>
+
+            <!-- Location -->
+            <section class="menu" id="location">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="page-header wow fadeInDown">
+                                <h1>{{ 'Location' }}</h1>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="food-menu wow fadeInUp">
+                        {% if invitationLang is not empty and invitationLang == 'fr' %}
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="menu-tags">
+                                        <span class="tagsort-active" data-filter=".church">{{ 'église et réception' }}</span>
+                                        <span data-filter=".reception">{{ 'séance photo' }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="menu-tags">
+                                        {#                                    <span data-filter="*" class="tagsort-active">All</span>#}
+                                        <span class="tagsort-active" data-filter=".church">{{ 'church & reception' }}</span>
+                                        <span data-filter=".reception">{{ 'photo session' }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                        <div class="row menu-items">
+                            <div class="menu-item col-sm-12 col-xs-12 church">
+                                <div class="clearfix menu-wrapper">
+                                    <p>
+                                        <strong>{{ 'Memoire Wedding Venue' }}</strong>
+                                        <br>
+                                        {{ 'Kromdraai road,' }}
+                                        <br>
+                                        {{ 'R374, Muldersdrift, 1747' }}
+                                        <br>
+                                    </p>
+                                </div>
+                                <div class="map-location" data-aos="fade-up" data-aos-easing="linear">
+                                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3586.1397944095697!2d27.831333076352426!3d-25.996237655538277!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1e959ca786bb5c81%3A0x831abbffd271e81a!2sMemoire%20Wedding%20and%20Conference%20Venue!5e0!3m2!1sen!2sza!4v1683388869663!5m2!1sen!2sza" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                                </div>
+                            </div>
+                            <div class="menu-item col-sm-12 col-xs-12 reception">
+                                <div class="clearfix menu-wrapper">
+                                    <p>
+                                        <strong>{{ 'Walter Sisulu National Botanical Garden' }}</strong>
+                                        <br>
+                                        {{ 'Malcolm Rd, Poortview,' }}
+                                        <br>
+                                        {{ 'Roodepoort, 1724' }}
+                                        <br>
+                                    </p>
+                                </div>
+                                <div class="map-location" data-aos="fade-up" data-aos-easing="linear">
+                                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3583.379030403757!2d27.842264076355058!3d-26.086543159194214!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1e95994c450eb50f%3A0xcd11e8cc251f3c59!2sWalter%20Sisulu%20National%20Botanical%20Garden!5e0!3m2!1sen!2sza!4v1683388921494!5m2!1sen!2sza" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Footer-->
+            <section class="footer">
+
+                <!-- Footer - Copyright -->
+                <div class="footer-copyrights">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <p><i class="fa fa-copyright"></i> 2023. Lesy & Lens's Wedding Invitation. All rights reserved. Developed with <i class="fa fa-heart primary-color"></i> by Shape IT Solutions</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+    </div>
+
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('build/js/custom_video_script.js') }}"></script>
+    <script>
+        $(function () {
+            let $invitationLetter = $('.invitation-letter');
+            let $rsvpElement = $('.p');
+            let rsvpValue = '';
+            let uuid = '';
+
+            const YES = 'Will be attending';
+            const NO = 'Will not be attending';
+            const UNSURE = 'Unsure';
+
+            if( $invitationLetter.length > 0 )
+                uuid = $invitationLetter.attr('id');
+
+            function rsvpInvitation(){
+                let data = { 'rsvpValue': rsvpValue };
+                let url = '{{ path('rsvp_invitation', {'uuid': 'value'}) }}'
+                    .replace('value', uuid);
+
+                $.ajax
+                (
+                    {
+                        url: url,
+                        type: 'GET',
+                        headers:
+                            {
+                                Accept: 'application/json'
+                            },
+                        data: data,
+                        beforeSend: function () {
+
+                        },
+                        success: function (data) {
+                            if
+                            (
+                                data.success &&
+                                data.hasOwnProperty('invitation') &&
+                                data.invitation
+                            )
+                                showSuccessfullyRsvped();
+                            else if ( data.success )
+                                showSuccessfullyRsvped();
+                            else
+                                showUnsuccessfullyRsvped();
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            // console.log('failed');
+                        },
+                        ajaxComplete: function () {
+
+                        }
+                    }
+                );
+            }
+
+            function setRsvpValue(value){
+                switch ( value ) {
+                    case 'yes': {
+                        rsvpValue = YES;
+                        break;
+                    }
+                    case 'no': {
+                        rsvpValue = NO;
+                        break;
+                    }
+                    case 'unsure': {
+                        rsvpValue = UNSURE;
+                        break;
+                    }
+                }
+            }
+
+            function showSuccessfullyRsvped(){
+                $('.rsvped-message').css('display','block');
+
+                setTimeout(function () {
+                    window.location.reload();
+                }, 2000);
+            }
+
+            function showUnsuccessfullyRsvped(){
+                $('.rsvped-message').html(`
+                <p style="width: 100%">Something went wrong. Please reload page and try again.</p>
+                `).css('display','block');
+            }
+
+            if ($rsvpElement.length > 0)
+                $rsvpElement.click(function () {
+                    setRsvpValue(this.id);
+
+                    if( rsvpValue !== '')
+                        rsvpInvitation();
+                });
+        });
+    </script>
+{% endblock %}

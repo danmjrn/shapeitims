@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <title>{% block title %}{{ 'Lesy & Lens\'s Wedding Invitation' }}{% endblock %}</title>
+        <!-- Meta Share -->
+        {% block tags %}
+            <meta property="og:title" content="{{ 'Lesy & Lens\'s Wedding Invitation' }}" />
+            <meta property="og:image" content="{{ asset('build/img/bg_landl_small.png') }}" />
+        {% endblock %}
+
+        <!-- Favicon icon -->
+        <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('build/img/favicon.png') }}">
+
+        {% block stylesheets %}
+            {#        {{ encore_entry_link_tags('app') }}#}
+            <!-- Bootstrap CSS -->
+{#            <link rel="stylesheet" href="{{ asset('build/css/bootstrap.min.css') }}">#}
+            <!-- Bootstrap CSS -->
+            <link rel="stylesheet" href="{{ asset('build/css/bootstrap_gininda.min.css') }}">
+
+            <!-- Plugins -->
+            <link rel="stylesheet" href="{{ asset('build/css/font-awesome/css/font-awesome.css') }}">
+            <link rel="stylesheet" href="{{ asset('build/css/plugin_gininda.css') }}">
+            <!-- Main CSS -->
+            <link href="{{ asset('build/css/main_gininda.css') }}" rel="stylesheet">
+            <link href="{{ asset('build/css/invitation.css') }}" rel="stylesheet">
+
+            <!-- Plugins -->
+            <link href="https://vjs.zencdn.net/7.20.3/video-js.css" rel="stylesheet" />
+
+            <!-- Web Fonts -->
+            <link href="https://fonts.googleapis.com/css?family=Playfair+Display:400,700|Dosis|Oswald:300" rel="stylesheet">
+            <link href='https://fonts.googleapis.com/css?family=Material+Icons' rel='stylesheet' type='text/css'>
+        {% endblock %}
+    </head>
+    <body>
+        <div class="invitation-container">
+            {% block body %}{% endblock %}
+        </div>
+        {% block javascripts %}
+            {#    {{ encore_entry_script_tags('app') }}#}
+            <!-- Required vendors -->
+{#            <script src="{{ asset('build/js/jquery-3.2.1.min.js') }}"></script>#}
+{#            <script src="{{ asset('build/js/tether.min.js') }}"></script>#}
+            <!-- Bootstrap JS -->
+{#            <script src="{{ asset('build/js/bootstrap.min.js') }}"></script>#}
+            <!-- Plugins JS -->
+{#            <script src="{{ asset('build/js/viewport.min.js') }}"></script>#}
+            <!-- Required vendors -->
+            <script src="{{ asset('build/js/js/vendor/jquery-1.11.2.min.js') }}"></script>
+            <script src="{{ asset('build/js/js/vendor/bootstrap.min.js') }}"></script>
+            <script src="{{ asset('build/js/js/vendor/jquery.flexslider-min.js') }}"></script>
+            <script src="{{ asset('build/js/js/vendor/spectragram.js') }}"></script>
+            <script src="{{ asset('build/js/js/vendor/owl.carousel.min.js') }}"></script>
+            <script src="{{ asset('build/js/js/vendor/velocity.min.js') }}"></script>
+            <script src="{{ asset('build/js/js/vendor/velocity.ui.min.js') }}"></script>
+            <script src="{{ asset('build/js/js/vendor/bootstrap-datepicker.min.js') }}"></script>
+            <script src="{{ asset('build/js/js/vendor/bootstrap-clockpicker.min.js') }}"></script>
+            <script src="{{ asset('build/js/js/vendor/jquery.magnific-popup.min.js') }}"></script>
+            <script src="{{ asset('build/js/js/vendor/isotope.pkgd.min.js') }}"></script>
+            <script src="{{ asset('build/js/js/vendor/slick.min.js') }}"></script>
+            <script src="{{ asset('build/js/js/vendor/wow.min.js') }}"></script>
+            <script src="{{ asset('build/js/js/animation.js') }}"></script>
+            <script src="{{ asset('build/js/js/vendor/vegas/vegas.min.js') }}"></script>
+            <script src="{{ asset('build/js/js/vendor/jquery.mb.YTPlayer.js') }}"></script>
+            <script src="{{ asset('build/js/js/vendor/jquery.stellar.js') }}"></script>
+            <script src="{{ asset('build/js/js/vendor/mc/jquery.ketchup.all.min.js') }}"></script>
+            <script src="{{ asset('build/js/js/vendor/mc/main.js') }}"></script>
+            <script src="{{ asset('build/js/js/vendor/validate.js') }}"></script>
+            <script src="{{ asset('build/js/js/reservation.js') }}"></script>
+            <!-- Main JS -->
+            <script src="{{ asset('build/js/js/main.js') }}"></script>
+        {% endblock %}
+    </body>
+</html>

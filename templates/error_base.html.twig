@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" class="h-100">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>{% block title %}{{ 'Shape It Solutions' }}{% endblock %}</title>
+    <!-- Favicon icon -->
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('build/img/favicon.png') }}">
+
+    {% block stylesheets %}
+{#        {{ encore_entry_link_tags('app') }}#}
+{#        <link rel="stylesheet" href="{{ asset('build/css/bootstrap5.css') }}">#}
+
+        <link href="{{ asset('build/vendor/jqvmap/css/jqvmap.min.css') }}" rel="stylesheet">
+        <link rel="stylesheet" href="{{ asset('build/vendor/chartist/css/chartist.min.css') }}">
+
+        <!-- Datatable -->
+        <link href="{{ asset('build/vendor/datatables/css/jquery.dataTables.min.css') }}" rel="stylesheet">
+        <link href="{{ asset('build/vendor/bootstrap-select/dist/css/bootstrap-select.min.css') }}" rel="stylesheet">
+        <link href="{{ asset('build/vendor/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css') }}" rel="stylesheet">
+
+        <!-- Form step -->
+        <link href="{{ asset('build/vendor/jquery-smartwizard/dist/css/smart_wizard.min.css') }}" rel="stylesheet">
+
+        <!-- Filepond Css -->
+{#        <link href="{{ asset('build/css/filepond.css') }}" rel="stylesheet">#}
+
+        <!-- Main Css -->
+        <link href="{{ asset('build/vendor/animate/animate.min.css') }}" rel="stylesheet">
+        <link href="{{ asset('build/vendor/aos/css/aos.min.css') }}" rel="stylesheet">
+        <link href="{{ asset('build/vendor/perfect-scrollbar/css/perfect-scrollbar.css') }}" rel="stylesheet">
+        <link href="{{ asset('build/vendor/metismenu/css/metisMenu.min.css') }}" rel="stylesheet">
+        <link href="{{ asset('build/css/main.css') }}" rel="stylesheet">
+
+
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&family=Roboto:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Playfair+Display:400,700|Dosis|Oswald:300" rel="stylesheet">
+        <link href='https://fonts.googleapis.com/css?family=Material+Icons' rel='stylesheet' type='text/css'>
+    {% endblock %}
+</head>
+<body class="h-100">
+
+    {% block body %}{% endblock %}
+
+<!--**********************************
+        Scripts
+***********************************-->
+{% block javascripts %}
+    <!-- Required vendors -->
+    <script src="{{ asset('build/vendor/global/global.min.js') }}"></script>
+    <script src="{{ asset('build/vendor/bootstrap-select/dist/js/bootstrap-select.min.js') }}"></script>
+    <script src="{{ asset('build/vendor/chart.js/Chart.bundle.min.js') }}"></script>
+    <script src="{{ asset('build/js/custom.min.js') }}"></script>
+    <script src="{{ asset('build/js/deznav-init.js') }}"></script>
+    <script src="{{ asset('build/vendor/bootstrap-datetimepicker/js/moment.js') }}"></script>
+    <script src="{{ asset('build/vendor/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js') }}"></script>
+{#    {{ encore_entry_script_tags('app') }}#}
+
+{% endblock %}
+
+</body>
+</html>
