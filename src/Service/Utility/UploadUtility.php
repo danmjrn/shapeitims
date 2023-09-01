@@ -257,15 +257,19 @@ namespace App\Service\Utility;
 use App\Entity\Exception\EntityNotCreatedException;
 use App\Entity\Exception\InvitationNotCreatedException;
 use App\Entity\Exception\UnknownUserTypeException;
+use App\Entity\Invitation;
 use App\Entity\Invitee;
 use App\Entity\User;
 use App\Service\Domain\Entity\UserDataTransferObject;
+use App\Service\Domain\Exception\InvitationDetailEmptyException;
 use App\Service\Domain\Exception\MissingAttributeException;
 use App\Service\Domain\InviteeService;
 use App\Service\Service;
+use App\Service\Utility\Exception\InvalidUsernameException;
 use Doctrine\DBAL\ConnectionException;
 use Doctrine\DBAL\Exception;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\NonUniqueResultException;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -376,7 +380,7 @@ class UploadUtility extends Service
             $result['userGroup'] = substr($invitationGroup, strpos($invitationGroup, 'd') + 1);
         } elseif (str_contains(strtolower($invitationGroup), 'fa')) {
             $result['invitationType'] = 3;
-            $result['userGroup'] = substr($invitationGroup, strpos($invitationGroup, 'm') + 1);
+            $result['userGroup'] = substr($invitationGroup, strpos($invitationGroup, 'y') + 1);
         }
 
         return $result;
@@ -384,7 +388,12 @@ class UploadUtility extends Service
 
     private function determineInviteeFrom(string $inviteeFrom): string
     {
-        return (strtolower($inviteeFrom) === 'g') ? Invitee::INVITEE_FROM_GROOM : Invitee::INVITEE_FROM_BRIDE;
+        return ((strtolower($inviteeFrom) === 'groom')
+            ? Invitee::INVITEE_FROM_GROOM
+            : (strtolower($inviteeFrom) === 'bride'))
+                ? Invitee::INVITEE_FROM_BRIDE
+                : Invitee::INVITEE_FROM_BOTH
+        ;
     }
 
     /**
@@ -394,6 +403,7 @@ class UploadUtility extends Service
      * @throws EntityNotCreatedException
      * @throws MissingAttributeException
      * @throws Exception
+     * @throws InvalidUsernameException
      */
     public function importInvitees(User $user): void
     {
@@ -422,23 +432,71 @@ class UploadUtility extends Service
         }
 
         foreach ($groupedAllData as $group) {
-            $this->inviteeService->createInviteeViaImport($group);
+            try {
+                $this->inviteeService->createInviteeViaImport($group);
+            } catch (
+                EntityNotCreatedException|
+                InvitationNotCreatedException|
+                UnknownUserTypeException|
+                InvitationDetailEmptyException|
+                MissingAttributeException|
+                ConnectionException|
+                Exception|
+                NonUniqueResultException $e)
+            {
+//                $this->logger->error($e->getMessage());
+                dd($e->getMessage());
+            }
         }
     }
 
+    /**
+     * @param string $invitee
+     * @param User|null $user
+     * @return array
+     * @throws InvalidUsernameException
+     */
     private function extractPersonData(string $invitee, User $user = null): array
     {
-        list($firstname, $lastname, $title, $invitationGroup, $inviteeFrom, $inviteeLang) = explode(";", $invitee);
+        list($firstname, $lastname, $title, $invitationGroup, $inviteeFrom, $invitationDetailType) = explode(";", $invitee);
+
+        if ($firstname != '_' && $lastname != '_')
+            $username = str_replace(
+                ' ',
+                '',
+                strtolower($firstname . '.' . $lastname . $this->extractNumbersFromString(
+                    $invitationGroup, false)
+                )
+            );
+        elseif ($firstname != '_' && $lastname == '_')
+            $username = str_replace(
+                ' ',
+                '',
+                strtolower($firstname . $this->extractNumbersFromString(
+                    $invitationGroup)
+                )
+            );
+        elseif ($firstname == '_' && $lastname != '_')
+            $username = str_replace(
+                ' ',
+                '',
+                strtolower($lastname . $this->extractNumbersFromString(
+                    $invitationGroup)
+                )
+            );
+        else
+            throw new InvalidUsernameException("$firstname & $lastname missing.");
 
         $dataPerson = [
-            'username' => str_replace(' ', '', strtolower($firstname . '.' . $lastname)),
+            'username' => $username,
             'author' => $user,
             'firstname' => $firstname,
             'lastname' => $lastname,
             'title' => $title,
-            'inviteeLang' => strtolower($inviteeLang),
+            'invitationDetailType' => strtolower($invitationDetailType),
             'phoneNumber' => null,
             'email' => null,
+            'inviteeLang' => 'en',
         ];
 
         $invitationData = $this->processInvitationGroup($invitationGroup);
@@ -448,5 +506,20 @@ class UploadUtility extends Service
         $dataPerson['invFrom'] = $this->determineInviteeFrom($inviteeFrom);
 
         return $dataPerson;
+    }
+
+    /**
+     * @param string $stringWithNumbers
+     * @param bool $withString
+     * @return string
+     */
+    function extractNumbersFromString(string $stringWithNumbers, bool $withString = true): string {
+        $pattern = '/(\d+)$/';
+
+        if (preg_match($pattern, $stringWithNumbers, $matches)) {
+            return $withString ? substr($stringWithNumbers, 0, 3).$matches[1] : $matches[1];
+        } else {
+            return '';
+        }
     }
 }

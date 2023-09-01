@@ -7,12 +7,14 @@ use App\Entity\Betrothed;
 use App\Entity\Exception\UnknownPermissionTypeException;
 
 use App\Entity\InternalUser;
+use App\Entity\InvitationDetail;
 use App\Entity\Permission;
 
 use App\Entity\Role;
 use App\Entity\User;
 use App\Repository\BetrothedRepository;
 use App\Repository\InternalUserRepository;
+use App\Repository\InvitationDetailRepository;
 use App\Repository\PermissionRepository;
 use App\Repository\RoleRepository;
 use App\Service\Domain\Entity\PermissionDataTransferObject;
@@ -38,6 +40,11 @@ class ImportUtility extends Service
      * @var InternalUserRepository
      */
     private InternalUserRepository $internalUserRepository;
+
+    /**
+     * @var InvitationDetailRepository
+     */
+    private InvitationDetailRepository $invitationDetailRepository;
 
     /**
      * @var UserPasswordHasherInterface
@@ -106,6 +113,20 @@ class ImportUtility extends Service
             'userType' => User::USER_TYPE_INTERNAL,
         ],
     ];
+    private const INITIAL_INVITATION_DETAILS = [
+        [
+            'content' => 'This is White Wedding of Codi & Raissa',
+            'type' => InvitationDetail::INVITATION_DETAIL_WW_TYPE,
+            'maximumDistribution' => 400,
+            'eventDate' => '2023-10-21',
+        ],
+        [
+            'content' => 'This is Traditional of Codi & Raissa',
+            'type' => InvitationDetail::INVITATION_DETAIL_TW_TYPE,
+            'maximumDistribution' => 200,
+            'eventDate' => '2023-10-14',
+        ],
+    ];
 
     /**
      * @throws NonUniqueResultException
@@ -130,6 +151,29 @@ class ImportUtility extends Service
 
         if (count($betrothedUsers) === 2)
             $this->linkBetrothedUsers(...$betrothedUsers);
+    }
+
+    /**
+     * @param array $invitationDetailsArray
+     * @return array
+     * @throws \Exception
+     */
+    private function createInvitationDetails(array $invitationDetailsArray): array
+    {
+        $invitationDetails = [];
+
+        foreach ($invitationDetailsArray as $invitationDetail) {
+            $invitationDetail = $this->createInvitationDetail(
+                $invitationDetail['content'],
+                $invitationDetail['type'],
+                $invitationDetail['maximumDistribution'],
+                $invitationDetail['eventDate']
+            );
+
+            $invitationDetails[] = $invitationDetail;
+        }
+
+        return $invitationDetails;
     }
 
     /**
@@ -176,6 +220,38 @@ class ImportUtility extends Service
     }
 
     /**
+     * @param string $content
+     * @param string $type
+     * @param int $maximumDistribution
+     * @param string $eventDate
+     * @return InvitationDetail
+     * @throws \Exception
+     */
+    private function createInvitationDetail(
+        string $content,
+        string $type,
+        int $maximumDistribution,
+        string $eventDate,
+    ): InvitationDetail {
+
+        $invitationDetail = $this->invitationDetailRepository->findByContent($content);
+
+        if (! $invitationDetail) {
+            $invitationDetail = new InvitationDetail();
+
+            $this->setInvitationDetailAttributes(
+                $invitationDetail,
+                $content,
+                $type,
+                $maximumDistribution,
+                new \DateTime($eventDate),
+            );
+        }
+
+        return $invitationDetail;
+    }
+
+    /**
      * @param Betrothed $user1
      * @param Betrothed $user2
      * @return void
@@ -219,6 +295,26 @@ class ImportUtility extends Service
         $this->persistEntity($user);
     }
 
+    /**
+     * @param InvitationDetail $invitationDetail
+     * @param string $content
+     * @param string $type
+     * @param int $maximumDistribution
+     * @param \DateTimeInterface $eventDate
+     * @return void
+     */
+    private function setInvitationDetailAttributes(InvitationDetail &$invitationDetail, string $content, string $type, int $maximumDistribution, \DateTimeInterface $eventDate): void
+    {
+        $invitationDetail
+            ->setContent($content)
+            ->setType($type)
+            ->setMaximumDistribution($maximumDistribution)
+            ->setEventDate($eventDate)
+        ;
+
+        $this->persistEntity($invitationDetail);
+    }
+
     public function __construct
         (
             EntityManagerInterface $entityManager,
@@ -227,6 +323,7 @@ class ImportUtility extends Service
             RequestStack $session,
             BetrothedRepository $betrothedRepository,
             InternalUserRepository $internalUserRepository,
+            InvitationDetailRepository $invitationDetailRepository,
             UserPasswordHasherInterface $userPasswordHasher,
             PermissionDataTransferObject $permissionDataTransferObject,
             PermissionRepository $permissionRepository,
@@ -238,6 +335,7 @@ class ImportUtility extends Service
 
         $this->betrothedRepository = $betrothedRepository;
         $this->internalUserRepository = $internalUserRepository;
+        $this->invitationDetailRepository = $invitationDetailRepository;
         $this->userPasswordHasher = $userPasswordHasher;
         $this->permissionDataTransferObject = $permissionDataTransferObject;
         $this->permissionRepository = $permissionRepository;
@@ -431,5 +529,17 @@ class ImportUtility extends Service
                 $this->flush();
             }
         }
+    }
+
+    /**
+     * @return void
+     * @throws \Exception
+     */
+    public function initializeInvitationDetails(): void
+    {
+        $invitationDetails = $this->createInvitationDetails(static::INITIAL_INVITATION_DETAILS);
+
+//        dd($invitationDetails);
+        $this->flush();
     }
 }

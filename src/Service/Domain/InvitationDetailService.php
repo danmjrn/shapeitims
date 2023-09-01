@@ -6,17 +6,20 @@ namespace App\Service\Domain;
 use App\Entity\Exception\EntityNotFoundException;
 use App\Entity\Exception\InvitationNotCreatedException;
 use App\Entity\Invitation;
+use App\Entity\InvitationDetail;
 use App\Entity\InvitationGroup;
 use App\Entity\Invitee;
 use App\Entity\Exception\EntityNotCreatedException;
 
 use App\Event\Domain\Invitation\InvitationAdded;
 use App\Event\Domain\Invitation\InvitationRsvped;
+use App\Repository\InvitationDetailRepository;
 use App\Repository\InvitationRepository;
 use App\Repository\InviteeRepository;
 
 use App\Service\Domain\Entity\InvitationDataTransferObject;
 
+use App\Service\Domain\Entity\InvitationDetailDataTransferObject;
 use App\Service\Domain\Exception\InvitationNotRsvpedException;
 use App\Service\Domain\Exception\InvitationRsvpNotUpdatedException;
 use App\Service\Domain\Exception\InvitationTimesOpenedNotUpdatedException;
@@ -32,17 +35,17 @@ use Psr\Log\LoggerInterface;
 
 use Symfony\Component\HttpFoundation\RequestStack;
 
-class InvitationService extends Service
+class InvitationDetailService extends Service
 {
     /**
-     * @var InvitationDataTransferObject
+     * @var InvitationDetailDataTransferObject
      */
-    private InvitationDataTransferObject $invitationDataTransferObject;
+    private InvitationDetailDataTransferObject $invitationDetailDataTransferObject;
 
     /**
-     * @var InvitationRepository
+     * @var InvitationDetailRepository
      */
-    private InvitationRepository $invitationRepository;
+    private InvitationDetailRepository $invitationDetailRepository;
 
     /**
      * @var InviteeRepository
@@ -51,18 +54,17 @@ class InvitationService extends Service
 
     public function __construct
         (
-            InvitationDataTransferObject $invitationDataTransferObject,
-            InvitationRepository $invitationRepository,
+            InvitationDetailDataTransferObject $invitationDetailDataTransferObject,
+            InvitationDetailRepository $invitationDetailRepository,
             InviteeRepository $inviteeRepository,
             EntityManagerInterface $entityManager,
             EventDispatcherInterface $eventDispatcher,
             LoggerInterface $logger,
-//            ApplicationMailer $mailer,
             RequestStack $session,
         )
     {
-        $this->invitationDataTransferObject = $invitationDataTransferObject;
-        $this->invitationRepository = $invitationRepository;
+        $this->invitationDetailDataTransferObject = $invitationDetailDataTransferObject;
+        $this->invitationDetailRepository = $invitationDetailRepository;
         $this->inviteeRepository = $inviteeRepository;
 
         parent::__construct
@@ -75,25 +77,24 @@ class InvitationService extends Service
     }
 
     /**
-     * @param Invitation $invitation
-     * @return InvitationDataTransferObject
+     * @param InvitationDetail $invitationDetail
+     * @return InvitationDetailDataTransferObject
      */
-    public function convertToDataTransferObject(Invitation $invitation): InvitationDataTransferObject
+    public function convertToDataTransferObject(InvitationDetail $invitationDetail): InvitationDetailDataTransferObject
     {
-        return $this->invitationDataTransferObject->fromEntity( $invitation );
+        return $this->invitationDetailDataTransferObject->fromEntity( $invitationDetail );
     }
 
     /**
-     * @param array $invitations
+     * @param array $invitationDetails
      * @return array
      */
-    public function convertToDataTransferObjects(array $invitations): array
+    public function convertToDataTransferObjects(array $invitationDetails): array
     {
-        return $this->invitationDataTransferObject->convertToDataTransferObjects( $invitations );
+        return $this->invitationDetailDataTransferObject->convertToDataTransferObjects( $invitationDetails );
     }
 
     /**
-     * @param Invitation $invitation
      * @param string $alias
      * @param array $invitationGroups
      * @return void
@@ -102,7 +103,7 @@ class InvitationService extends Service
      * @throws MissingAttributeException
      * @throws \Doctrine\DBAL\Exception
      */
-    public function createInvitation(Invitation $invitation, string $alias, array $invitationGroups ): void
+    public function createInvitation(string $alias, array $invitationGroups ): void
     {
         if ( ! empty($alias) )
             try {
@@ -110,7 +111,7 @@ class InvitationService extends Service
 
                 $invitationDataTransferObject = new InvitationDataTransferObject();
 
-                $invitation = $invitationDataTransferObject->toEntity( [ 'alias' => $alias ], $invitation );
+                $invitation = $invitationDataTransferObject->toEntity( [ 'alias' => $alias ] );
 
                 foreach ( $invitationGroups as $invitationGroup) {
                     if ($invitationGroup instanceof InvitationGroup ){
@@ -156,13 +157,13 @@ class InvitationService extends Service
      * @param bool $returnDTO
      * @return array
      */
-    public function getAllInvitations( bool $returnDTO = true ): array
+    public function getAllInvitationDetails( bool $returnDTO = true ): array
     {
-        $invitations = $this->invitationRepository->findAll();
+        $invitationDetails = $this->invitationDetailRepository->findAll();
 
         return $returnDTO
-            ? $this->convertToDataTransferObjects($invitations)
-            : $invitations
+            ? $this->convertToDataTransferObjects($invitationDetails)
+            : $invitationDetails
         ;
     }
 
@@ -170,8 +171,6 @@ class InvitationService extends Service
      * @param string $uuid
      * @param bool $returnDTO
      * @return InvitationDataTransferObject|Invitation
-     * @throws \Doctrine\ORM\NoResultException
-     * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function getInvitationByUuid( string $uuid, bool $returnDTO = true ): InvitationDataTransferObject|Invitation
     {
@@ -293,5 +292,21 @@ class InvitationService extends Service
 
             throw new InvitationTimesOpenedNotUpdatedException();
         }
+    }
+
+    /**
+     * @param string $type
+     * @param bool $returnDTO
+     * @return InvitationDetail|InvitationDetailDataTransferObject|null
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function getInvitationDetailByType(string $type, bool $returnDTO = false) : InvitationDetail|InvitationDetailDataTransferObject|null
+    {
+        $invitationDetail = $this->invitationDetailRepository->findInvitationDetailByType( $type );
+
+        return $returnDTO
+            ? $this->invitationDetailDataTransferObject->fromEntity( $invitationDetail )
+            : $invitationDetail
+        ;
     }
 }

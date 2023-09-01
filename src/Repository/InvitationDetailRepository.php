@@ -63,4 +63,34 @@ class InvitationDetailRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+    /**
+     * @param string $content
+     * @return InvitationDetail|null
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function findByContent(string $content): ?InvitationDetail
+    {
+        return $this->createQueryBuilder('i')
+            ->andWhere('i.content = :content')
+            ->setParameter('content', $content)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
+
+    /**
+     * @param string $INVITATION_DETAIL_WW_TYPE
+     * @return InvitationDetail|null
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function findInvitationDetailByType(string $INVITATION_DETAIL_WW_TYPE): ?InvitationDetail
+    {
+        return $this->createQueryBuilder('i')
+            ->andWhere('i.type = :type')
+            ->setParameter('type', $INVITATION_DETAIL_WW_TYPE)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
 }

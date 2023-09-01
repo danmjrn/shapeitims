@@ -29,6 +29,7 @@ class ManualDataImportCommand extends Command
         try {
             $this->importUtility->importRoles();
             $this->importUtility->createUserAccounts();
+            $this->importUtility->initializeInvitationDetails();
 
             $io->success('Importing data completed successfully.');
         }

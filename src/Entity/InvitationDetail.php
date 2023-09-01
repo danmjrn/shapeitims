@@ -34,9 +34,17 @@ class InvitationDetail
     #[ORM\OneToMany(mappedBy: 'invitationDetail', targetEntity: Media::class)]
     private Collection $media;
 
+    #[ORM\OneToMany(mappedBy: 'invitationDetail', targetEntity: Invitation::class)]
+    private Collection $invitations;
+
+    public const INVITATION_DETAIL_WW_TYPE = 'White Wedding';
+    public const INVITATION_DETAIL_TW_TYPE = 'Traditional Wedding';
+
     public function __construct()
     {
         $this->venues = new ArrayCollection();
+        $this->media = new ArrayCollection();
+        $this->invitations = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -132,17 +140,40 @@ class InvitationDetail
 
     /**
      * @param Media $media
-     * @return $this
+     * @return InvitationDetail
      */
     public function addMedia(Media $media): self
     {
-        if ( ! $this->media->contains( $media ) ) {
-            $this->media[] = $media;
-            $media->setInvitationDetail( $this );
+        if (!$this->media->contains($media)) {
+            $this->media->add($media);
+            $media->setInvitationDetail($this);
         }
 
         return $this;
     }
+
+    /**
+     * @return Collection
+     */
+    public function getInvitations(): Collection
+    {
+        return $this->invitations;
+    }
+
+    /**
+     * @param Invitation $invitation
+     * @return $this
+     */
+    public function addInvitation(Invitation $invitation): self
+    {
+        if (!$this->invitations->contains($invitation)) {
+            $this->invitations->add($invitation);
+            $invitation->setInvitationDetail($this);
+        }
+
+        return $this;
+    }
+
 
 
 }

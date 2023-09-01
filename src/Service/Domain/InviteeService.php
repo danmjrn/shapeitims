@@ -12,6 +12,7 @@ use App\Entity\Exception\UnknownApplicationUpdateTypeException;
 use App\Entity\Exception\UnknownUserTypeException;
 use App\Entity\InternalUser;
 use App\Entity\Invitation;
+use App\Entity\InvitationDetail;
 use App\Entity\InvitationGroup;
 use App\Entity\Invitee;
 use App\Event\Domain\Invitation\InvitationAdded;
@@ -29,6 +30,7 @@ use App\Service\Domain\Entity\InvitationDataTransferObject;
 use App\Service\Domain\Entity\InvitationGroupDataTransferObject;
 
 use App\Service\Domain\Entity\UserDataTransferObject;
+use App\Service\Domain\Exception\InvitationDetailEmptyException;
 use App\Service\Domain\Exception\InviteeWithDuplicateUsernameException;
 use App\Service\Domain\Exception\MissingAttributeException;
 
@@ -52,6 +54,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class InviteeService extends Service
 {
+    private InvitationDetailService $invitationDetailService;
 
     /**
      * @var InvitationService
@@ -109,21 +112,21 @@ class InviteeService extends Service
         (
             EntityManagerInterface $entityManager,
             EventDispatcherInterface $eventDispatcher,
+            InvitationDetailService $invitationDetailService,
             InvitationService $invitationService,
             InviteeRepository $inviteeRepository,
             InternalUserRepository $internalUserRepository,
             LoggerInterface $logger,
-//            ApplicationMailer $mailer,
             RequestStack $session,
             UserDataTransferObject $inviteeDataTransferObject,
             UserPasswordHasherInterface $userPasswordHasher
     )
     {
+        $this->invitationDetailService = $invitationDetailService;
         $this->invitationService = $invitationService;
         $this->inviteeDataTransferObject = $inviteeDataTransferObject;
         $this->inviteeRepository = $inviteeRepository;
         $this->internalUserRepository = $internalUserRepository;
-//        $this->mailer = $mailer;
         $this->userPasswordHasher = $userPasswordHasher;
 
         parent::__construct
@@ -131,7 +134,6 @@ class InviteeService extends Service
                 $entityManager,
                 $eventDispatcher,
                 $logger,
-//                $mailer,
                 $session,
 
             );
@@ -231,6 +233,7 @@ class InviteeService extends Service
      * @throws MissingAttributeException
      * @throws \Doctrine\DBAL\Exception
      * @throws UnknownUserTypeException
+     * @throws NonUniqueResultException
      */
     public function createInvitee( array $allData ): void
     {
@@ -257,7 +260,7 @@ class InviteeService extends Service
             }
         }
 
-        $this->invitationService->createInvitation( $randomAlias, $invitationGroups );
+        $this->linkToInvitationDetail($allData[0]['invitationDetailType'], $randomAlias, $invitationGroups);
 
     }
 
@@ -270,9 +273,13 @@ class InviteeService extends Service
      * @throws MissingAttributeException
      * @throws \Doctrine\DBAL\Exception
      * @throws UnknownUserTypeException
+     * @throws InvitationDetailEmptyException
+     * @throws NonUniqueResultException
      */
     public function createInviteeViaImport( array $allData ): void
     {
+        $this->doesInvitationDetailExist();
+
         $combinedUsername = $this->generateCombinedUsername( $allData );
         $randomAlias = InvitationGroup::generateRandomAlias( $combinedUsername );
         $hashedPassword = $this->userPasswordHasher->hashPassword( new Invitee(), "Password@1" );
@@ -296,8 +303,9 @@ class InviteeService extends Service
             }
         }
 
-        if ( ! empty($invitationGroups) )
-            $this->invitationService->createInvitation( $randomAlias, $invitationGroups );
+        if ( ! empty($invitationGroups) ) {
+            $this->linkToInvitationDetail($allData[0]['invitationDetailType'], $randomAlias, $invitationGroups);
+        }
 
     }
 
@@ -435,6 +443,63 @@ class InviteeService extends Service
             $this->rollBackTransaction();
 
             throw $exception;
+        }
+    }
+
+    /**
+     * @return void
+     * @throws InvitationDetailEmptyException
+     */
+    private function doesInvitationDetailExist(): void
+    {
+        if (count($this->invitationDetailService->getAllInvitationDetails()) < 1)
+            throw new InvitationDetailEmptyException();
+    }
+
+    /**
+     * @param string $invitationDetailType
+     * @param string $randomAlias
+     * @param array $invitationGroups
+     * @return void
+     * @throws ConnectionException
+     * @throws InvitationNotCreatedException
+     * @throws MissingAttributeException
+     * @throws NonUniqueResultException
+     * @throws \Doctrine\DBAL\Exception
+     */
+    private function linkToInvitationDetail(string $invitationDetailType, string $randomAlias, array $invitationGroups): void
+    {
+        $invitation = new Invitation();
+        switch (strtolower($invitationDetailType)) {
+            case 'w':
+            {
+                $invitation->setInvitationDetail($this->invitationDetailService
+                    ->getInvitationDetailByType(InvitationDetail::INVITATION_DETAIL_WW_TYPE));
+                $this->invitationService->createInvitation($invitation, $randomAlias, $invitationGroups);
+                break;
+            }
+            case 't':
+            {
+                $invitation->setInvitationDetail($this->invitationDetailService
+                    ->getInvitationDetailByType(InvitationDetail::INVITATION_DETAIL_TW_TYPE));
+                $this->invitationService->createInvitation($invitation, $randomAlias, $invitationGroups);
+                break;
+            }
+            default:
+            {
+                $invitationWW = new Invitation();
+                $invitationTW = new Invitation();
+
+                $invitationWW->setInvitationDetail($this->invitationDetailService
+                    ->getInvitationDetailByType(InvitationDetail::INVITATION_DETAIL_WW_TYPE));
+                $this->invitationService->createInvitation($invitationWW, $randomAlias, $invitationGroups);
+
+                $invitationTW->setInvitationDetail($this->invitationDetailService
+                    ->getInvitationDetailByType(InvitationDetail::INVITATION_DETAIL_TW_TYPE));
+                $this->invitationService->createInvitation($invitationTW, $randomAlias, $invitationGroups);
+
+
+            }
         }
     }
 }

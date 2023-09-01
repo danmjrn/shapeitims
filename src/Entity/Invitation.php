@@ -51,6 +51,9 @@ class Invitation
     #[ORM\Column]
     private ?bool $hasPlusOne = false;
 
+    #[ORM\OneToOne(mappedBy: 'invitations', targetEntity: InvitationDetail::class)]
+    private ?InvitationDetail $invitationDetail = null;
+
     public const ANY = 'ANY';
     public const YES = 'Will be attending';
     public const NO = 'Will not be attending';
@@ -166,4 +169,56 @@ class Invitation
 
         return $this;
     }
+
+    /**
+     * @return int|null
+     */
+    public function getInvitationFor(): ?int
+    {
+        return $this->invitationFor;
+    }
+
+    /**
+     * @param int|null $invitationFor
+     */
+    public function setInvitationFor(?int $invitationFor): void
+    {
+        $this->invitationFor = $invitationFor;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getHasPlusOne(): ?bool
+    {
+        return $this->hasPlusOne;
+    }
+
+    /**
+     * @param bool|null $hasPlusOne
+     */
+    public function setHasPlusOne(?bool $hasPlusOne): void
+    {
+        $this->hasPlusOne = $hasPlusOne;
+    }
+
+    /**
+     * @return InvitationDetail|null
+     */
+    public function getInvitationDetail(): ?InvitationDetail
+    {
+        return $this->invitationDetail;
+    }
+
+    /**
+     * @param InvitationDetail|null $invitationDetail
+     */
+    public function setInvitationDetail(?InvitationDetail $invitationDetail): void
+    {
+        $invitationDetail?->addInvitation($this);
+
+        $this->invitationDetail = $invitationDetail;
+    }
+
+
 }
