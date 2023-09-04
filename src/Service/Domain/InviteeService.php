@@ -280,6 +280,7 @@ class InviteeService extends Service
     {
         $this->doesInvitationDetailExist();
 
+        $this->updateDuplicateUsernameFromImport($allData);
         $combinedUsername = $this->generateCombinedUsername( $allData );
         $randomAlias = InvitationGroup::generateRandomAlias( $combinedUsername );
         $hashedPassword = $this->userPasswordHasher->hashPassword( new Invitee(), "Password@1" );
@@ -342,6 +343,33 @@ class InviteeService extends Service
             $combinedUsername .= $data['username'];
         }
         return $combinedUsername;
+    }
+
+    /**
+     * @param array $allData
+     * @return void
+     */
+    public function updateDuplicateUsernameFromImport( array &$allData ): void {
+        // update Duplicate Username from $allData if count is 2
+        $duplicateUsername = [];
+        foreach ( $allData as $data ) {
+            if ( ! empty($data['username']) ) {
+                $duplicateUsername[] = $data['username'];
+            }
+        }
+        if ( count($duplicateUsername) === 2 && ($duplicateUsername[0] === $duplicateUsername[1]) ) {
+            $allData[0]['username'] = $duplicateUsername[0] . 'a';
+            $allData[1]['username'] = $duplicateUsername[1] . 'b';
+        }
+
+        if ( count($duplicateUsername) === 3
+            && ($duplicateUsername[0] === $duplicateUsername[1]
+                || $duplicateUsername[0] === $duplicateUsername[2])
+        ) {
+            $allData[0]['username'] = $duplicateUsername[0] . 'a';
+            $allData[1]['username'] = $duplicateUsername[1] . 'b';
+            $allData[2]['username'] = $duplicateUsername[2] . 'c';
+        }
     }
 
     /**
@@ -467,39 +495,50 @@ class InviteeService extends Service
      * @throws NonUniqueResultException
      * @throws \Doctrine\DBAL\Exception
      */
-    private function linkToInvitationDetail(string $invitationDetailType, string $randomAlias, array $invitationGroups): void
+    private function linkToInvitationDetail(string $invitationDetailType, string $alias, array $invitationGroups): void
     {
         $invitation = new Invitation();
+
         switch (strtolower($invitationDetailType)) {
             case 'w':
             {
-                $invitation->setInvitationDetail($this->invitationDetailService
-                    ->getInvitationDetailByType(InvitationDetail::INVITATION_DETAIL_WW_TYPE));
-                $this->invitationService->createInvitation($invitation, $randomAlias, $invitationGroups);
+                $invitationDetailTypeConstant = InvitationDetail::INVITATION_DETAIL_WW_TYPE;
+                $aliasSuffix = '-w';
                 break;
             }
             case 't':
             {
-                $invitation->setInvitationDetail($this->invitationDetailService
-                    ->getInvitationDetailByType(InvitationDetail::INVITATION_DETAIL_TW_TYPE));
-                $this->invitationService->createInvitation($invitation, $randomAlias, $invitationGroups);
+                $invitationDetailTypeConstant = InvitationDetail::INVITATION_DETAIL_TW_TYPE;
+                $aliasSuffix = '-t';
                 break;
             }
             default:
             {
-                $invitationWW = new Invitation();
-                $invitationTW = new Invitation();
-
-                $invitationWW->setInvitationDetail($this->invitationDetailService
-                    ->getInvitationDetailByType(InvitationDetail::INVITATION_DETAIL_WW_TYPE));
-                $this->invitationService->createInvitation($invitationWW, $randomAlias, $invitationGroups);
-
-                $invitationTW->setInvitationDetail($this->invitationDetailService
-                    ->getInvitationDetailByType(InvitationDetail::INVITATION_DETAIL_TW_TYPE));
-                $this->invitationService->createInvitation($invitationTW, $randomAlias, $invitationGroups);
-
-
+                $invitationDetailTypeConstant = InvitationDetail::INVITATION_DETAIL_WW_TYPE;
+                $invitation->addInvitationDetail(
+                    $this->invitationDetailService
+                        ->getInvitationDetailByType(InvitationDetail::INVITATION_DETAIL_TW_TYPE)
+                );
+                $aliasSuffix = '-b';
+                break;
             }
         }
+
+        $invitation->addInvitationDetail(
+            $this->invitationDetailService
+                ->getInvitationDetailByType($invitationDetailTypeConstant)
+        );
+        $this->invitationService->createInvitation($invitation, $alias . $aliasSuffix, $invitationGroups);
+
+    }
+
+    /**
+     * @param $username
+     * @return Invitee|null
+     * @throws NonUniqueResultException
+     */
+    public function getInviteeByUsername($username): ?Invitee
+    {
+        return $this->inviteeRepository->findInviteeByUsername($username);
     }
 }

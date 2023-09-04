@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20230814164251 extends AbstractMigration
+final class Version20230904143023 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -24,6 +24,7 @@ final class Version20230814164251 extends AbstractMigration
         $this->addSql('CREATE TABLE gift_registry (id INT AUTO_INCREMENT NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE internal_user (id INT NOT NULL, email VARCHAR(255) DEFAULT NULL, UNIQUE INDEX UNIQ_61134782E7927C74 (email), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE invitation (alias VARCHAR(255) NOT NULL, uuid CHAR(36) DEFAULT NULL COMMENT \'(DC2Type:uuid)\', rsvp VARCHAR(100) DEFAULT NULL, times_opened INT DEFAULT NULL, invitation_for INT DEFAULT NULL, has_plus_one TINYINT(1) NOT NULL, created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, UNIQUE INDEX UNIQ_F11D61A2D17F50A6 (uuid), PRIMARY KEY(alias)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE invitation_invitation_detail (invitation_alias VARCHAR(255) NOT NULL, invitation_detail_id INT NOT NULL, INDEX IDX_B25136FE8DA7FFB5 (invitation_alias), INDEX IDX_B25136FE564EF83A (invitation_detail_id), PRIMARY KEY(invitation_alias, invitation_detail_id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE invitation_detail (id INT AUTO_INCREMENT NOT NULL, content LONGTEXT DEFAULT NULL, type VARCHAR(255) NOT NULL, maximum_distribution INT DEFAULT NULL, event_date DATE NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE invitation_group (id INT AUTO_INCREMENT NOT NULL, invitation_alias VARCHAR(255) DEFAULT NULL, invitee_id INT NOT NULL, type INT NOT NULL, INDEX IDX_10BD0E48DA7FFB5 (invitation_alias), UNIQUE INDEX UNIQ_10BD0E47A512022 (invitee_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE invitee (id INT NOT NULL, internal_user_id INT NOT NULL, seat_placement_id INT DEFAULT NULL, email VARCHAR(255) DEFAULT NULL, phone_number VARCHAR(50) DEFAULT NULL, title VARCHAR(50) DEFAULT NULL, invitee_from VARCHAR(100) DEFAULT NULL, invitee_lang VARCHAR(100) DEFAULT NULL, INDEX IDX_F7AADF3DBF7692A3 (internal_user_id), INDEX IDX_F7AADF3DCF66DC38 (seat_placement_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
@@ -40,6 +41,8 @@ final class Version20230814164251 extends AbstractMigration
         $this->addSql('ALTER TABLE betrothed ADD CONSTRAINT FK_B9F43CCD36158F60 FOREIGN KEY (betrothed_id) REFERENCES betrothed (id)');
         $this->addSql('ALTER TABLE betrothed ADD CONSTRAINT FK_B9F43CCDBF396750 FOREIGN KEY (id) REFERENCES user (id) ON DELETE CASCADE');
         $this->addSql('ALTER TABLE internal_user ADD CONSTRAINT FK_61134782BF396750 FOREIGN KEY (id) REFERENCES user (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE invitation_invitation_detail ADD CONSTRAINT FK_B25136FE8DA7FFB5 FOREIGN KEY (invitation_alias) REFERENCES invitation (alias)');
+        $this->addSql('ALTER TABLE invitation_invitation_detail ADD CONSTRAINT FK_B25136FE564EF83A FOREIGN KEY (invitation_detail_id) REFERENCES invitation_detail (id) ON DELETE CASCADE');
         $this->addSql('ALTER TABLE invitation_group ADD CONSTRAINT FK_10BD0E48DA7FFB5 FOREIGN KEY (invitation_alias) REFERENCES invitation (alias)');
         $this->addSql('ALTER TABLE invitation_group ADD CONSTRAINT FK_10BD0E47A512022 FOREIGN KEY (invitee_id) REFERENCES invitee (id)');
         $this->addSql('ALTER TABLE invitee ADD CONSTRAINT FK_F7AADF3DBF7692A3 FOREIGN KEY (internal_user_id) REFERENCES internal_user (id)');
@@ -63,6 +66,8 @@ final class Version20230814164251 extends AbstractMigration
         $this->addSql('ALTER TABLE betrothed DROP FOREIGN KEY FK_B9F43CCD36158F60');
         $this->addSql('ALTER TABLE betrothed DROP FOREIGN KEY FK_B9F43CCDBF396750');
         $this->addSql('ALTER TABLE internal_user DROP FOREIGN KEY FK_61134782BF396750');
+        $this->addSql('ALTER TABLE invitation_invitation_detail DROP FOREIGN KEY FK_B25136FE8DA7FFB5');
+        $this->addSql('ALTER TABLE invitation_invitation_detail DROP FOREIGN KEY FK_B25136FE564EF83A');
         $this->addSql('ALTER TABLE invitation_group DROP FOREIGN KEY FK_10BD0E48DA7FFB5');
         $this->addSql('ALTER TABLE invitation_group DROP FOREIGN KEY FK_10BD0E47A512022');
         $this->addSql('ALTER TABLE invitee DROP FOREIGN KEY FK_F7AADF3DBF7692A3');
@@ -82,6 +87,7 @@ final class Version20230814164251 extends AbstractMigration
         $this->addSql('DROP TABLE gift_registry');
         $this->addSql('DROP TABLE internal_user');
         $this->addSql('DROP TABLE invitation');
+        $this->addSql('DROP TABLE invitation_invitation_detail');
         $this->addSql('DROP TABLE invitation_detail');
         $this->addSql('DROP TABLE invitation_group');
         $this->addSql('DROP TABLE invitee');

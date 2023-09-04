@@ -404,6 +404,7 @@ class UploadUtility extends Service
      * @throws MissingAttributeException
      * @throws Exception
      * @throws InvalidUsernameException
+     * @throws NonUniqueResultException
      */
     public function importInvitees(User $user): void
     {
@@ -455,6 +456,7 @@ class UploadUtility extends Service
      * @param User|null $user
      * @return array
      * @throws InvalidUsernameException
+     * @throws NonUniqueResultException
      */
     private function extractPersonData(string $invitee, User $user = null): array
     {
@@ -473,7 +475,7 @@ class UploadUtility extends Service
                 ' ',
                 '',
                 strtolower($firstname . $this->extractNumbersFromString(
-                    $invitationGroup)
+                        $invitationGroup)
                 )
             );
         elseif ($firstname == '_' && $lastname != '_')
@@ -481,7 +483,7 @@ class UploadUtility extends Service
                 ' ',
                 '',
                 strtolower($lastname . $this->extractNumbersFromString(
-                    $invitationGroup)
+                        $invitationGroup)
                 )
             );
         else

@@ -34,7 +34,7 @@ class InvitationDetail
     #[ORM\OneToMany(mappedBy: 'invitationDetail', targetEntity: Media::class)]
     private Collection $media;
 
-    #[ORM\OneToMany(mappedBy: 'invitationDetail', targetEntity: Invitation::class)]
+    #[ORM\ManyToMany(targetEntity: Invitation::class, mappedBy: 'invitationDetails')]
     private Collection $invitations;
 
     public const INVITATION_DETAIL_WW_TYPE = 'White Wedding';
@@ -168,7 +168,7 @@ class InvitationDetail
     {
         if (!$this->invitations->contains($invitation)) {
             $this->invitations->add($invitation);
-            $invitation->setInvitationDetail($this);
+            $invitation->addInvitationDetail($this);
         }
 
         return $this;

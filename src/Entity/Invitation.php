@@ -51,8 +51,9 @@ class Invitation
     #[ORM\Column]
     private ?bool $hasPlusOne = false;
 
-    #[ORM\OneToOne(mappedBy: 'invitations', targetEntity: InvitationDetail::class)]
-    private ?InvitationDetail $invitationDetail = null;
+    #[ORM\ManyToMany(targetEntity: InvitationDetail::class, inversedBy: 'invitations')]
+    #[ORM\JoinColumn(name: 'invitation_alias', referencedColumnName: 'alias', nullable: true)]
+    private Collection $invitationDetails;
 
     public const ANY = 'ANY';
     public const YES = 'Will be attending';
@@ -65,6 +66,7 @@ class Invitation
         $this->timesOpened = 0;
 
         $this->invitationGroups = new ArrayCollection();
+        $this->invitationDetails = new ArrayCollection();
     }
 
     /**
@@ -203,21 +205,25 @@ class Invitation
     }
 
     /**
-     * @return InvitationDetail|null
+     * @return Collection
      */
-    public function getInvitationDetail(): ?InvitationDetail
+    public function getInvitationDetails(): Collection
     {
-        return $this->invitationDetail;
+        return $this->invitationDetails;
     }
 
     /**
      * @param InvitationDetail|null $invitationDetail
+     * @return $this
      */
-    public function setInvitationDetail(?InvitationDetail $invitationDetail): void
+    public function addInvitationDetail(?InvitationDetail $invitationDetail): self
     {
-        $invitationDetail?->addInvitation($this);
+        if (!$this->invitationDetails->contains($invitationDetail)) {
+            $this->invitationDetails->add($invitationDetail);
+            $invitationDetail?->addInvitation($this);
+        }
 
-        $this->invitationDetail = $invitationDetail;
+        return $this;
     }
 
 

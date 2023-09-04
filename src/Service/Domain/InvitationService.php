@@ -112,6 +112,11 @@ class InvitationService extends Service
 
                 $invitation = $invitationDataTransferObject->toEntity( [ 'alias' => $alias ], $invitation );
 
+                if ($invitation->getHasPlusOne())
+                    $invitation->setInvitationFor(count($invitationGroups) + 1);
+                else
+                    $invitation->setInvitationFor(count($invitationGroups));
+
                 foreach ( $invitationGroups as $invitationGroup) {
                     if ($invitationGroup instanceof InvitationGroup ){
                         $invitationGroup->setInvitation( $invitation );
